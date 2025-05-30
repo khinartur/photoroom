@@ -1,0 +1,7 @@
+export {default as DotsIcon} from './dots.svg'
+export {default as FolderIcon} from './folder.svg'
+export {default as NewFolderIcon} from './new-folder.svg'
+export {default as PlusIcon} from './plus.svg'
+export {default as CreateIcon} from './create.svg'
+export {default as StackIcon} from './stack.svg'
+export {default as ExpandIcon} from './expand.svg'
