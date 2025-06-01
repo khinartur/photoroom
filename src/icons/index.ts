@@ -1,3 +1,4 @@
+export {default as CloseIcon} from './close.svg'
 export {default as DotsIcon} from './dots.svg'
 export {default as FolderIcon} from './folder.svg'
 export {default as NewFolderIcon} from './new-folder.svg'

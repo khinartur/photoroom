@@ -4,9 +4,11 @@ import {MenuItem} from './ui-kit/MenuItem'
 import {User} from './User'
 import {useContext} from 'react'
 import {AppStateContext} from './state/app'
+import {ModalsStateContext} from './state/modals'
 
 export const Menu = observer(() => {
     const appState = useContext(AppStateContext)
+    const modalsState = useContext(ModalsStateContext)
 
     return (
         <div className="flex h-full flex-col gap-4 p-4 w-[280px] overflow-y-auto border-r border-black-alpha-1">
@@ -34,9 +36,7 @@ export const Menu = observer(() => {
                 <MenuItem
                     label="Preferences"
                     icon={<SettingsIcon />}
-                    onClick={() => {
-                        console.log('open settings modal')
-                    }}
+                    onClick={() => modalsState.openSettingsModal()}
                 />
             </div>
         </div>

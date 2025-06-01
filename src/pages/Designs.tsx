@@ -5,11 +5,13 @@ import {Category} from '../ui-kit/Category'
 import {DesignPreviewCard} from '../ui-kit/DesignPreviewCard'
 import {Folder} from '../ui-kit/Folder'
 import {PageLayout} from '../ui-kit/PageLayout'
-import {useContext} from 'react'
 import {AppStateContext} from '../state/app'
+import {useContext} from 'react'
+import {ModalsStateContext} from '../state/modals'
 
 export const DesignsPage = observer(() => {
     const appState = useContext(AppStateContext)
+    const modalsState = useContext(ModalsStateContext)
 
     return (
         <PageLayout
@@ -19,9 +21,7 @@ export const DesignsPage = observer(() => {
                     <Button
                         variant="secondary"
                         icon={<NewFolderIcon />}
-                        onClick={() => {
-                            console.log('new folder')
-                        }}
+                        onClick={() => modalsState.openNewFolderModal()}
                     >
                         New folder
                     </Button>

@@ -2,8 +2,8 @@ import {tcn} from '../utils/tcn'
 
 type MenuItemProps = {
     label: string
-    icon: React.ReactNode
-    onClick: () => void
+    icon?: React.ReactNode
+    onClick?: () => void
     active?: boolean
 }
 
@@ -24,14 +24,16 @@ export const MenuItem = ({
             )}
             onClick={onClick}
         >
-            <div
-                className={tcn(
-                    'flex items-center justify-center size-5 text-content-secondary',
-                    {'text-content-accent': active},
-                )}
-            >
-                {icon}
-            </div>
+            {icon && (
+                <div
+                    className={tcn(
+                        'flex items-center justify-center size-5 text-content-secondary',
+                        {'text-content-accent': active},
+                    )}
+                >
+                    {icon}
+                </div>
+            )}
             <span
                 className={tcn('text-content-primary text-[14px] font-medium', {
                     'text-content-accent': active,
