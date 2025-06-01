@@ -3,10 +3,16 @@ import {tcn} from '../utils/tcn'
 type MenuItemProps = {
     label: string
     icon: React.ReactNode
+    onClick: () => void
     active?: boolean
 }
 
-export const MenuItem = ({label, icon, active = false}: MenuItemProps) => {
+export const MenuItem = ({
+    label,
+    icon,
+    active = false,
+    onClick,
+}: MenuItemProps) => {
     return (
         <div
             className={tcn(
@@ -16,6 +22,7 @@ export const MenuItem = ({label, icon, active = false}: MenuItemProps) => {
                         active,
                 },
             )}
+            onClick={onClick}
         >
             <div
                 className={tcn(
