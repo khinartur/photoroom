@@ -10,7 +10,7 @@ export const Input = ({label, ...props}: InputProps) => {
             {label && (
                 <label
                     htmlFor={props.id}
-                    className="text-content-primary text-sm"
+                    className="text-content-primary text-sm font-medium"
                 >
                     {label}
                 </label>

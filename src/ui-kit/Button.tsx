@@ -2,8 +2,8 @@ import {tcn} from '../utils/tcn'
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     className?: string
-    variant?: 'primary' | 'secondary'
-    onClick: () => void
+    variant?: 'primary' | 'secondary' | 'accent'
+    onClick?: () => void
     icon?: React.ReactNode
 }
 
@@ -26,6 +26,9 @@ export const Button = ({
                         variant === 'primary',
                     'bg-background-subdued hover:bg-background-subdued-hover actvie:bg-background-subdued-down  text-black':
                         variant === 'secondary',
+                    'bg-accent-alpha-1 hover:bg-accent-alpha-2 active:bg-accent-alpha-3 text-content-accent':
+                        variant === 'accent',
+                    'w-10 px-0': !children,
                 },
             )}
             onClick={onClick}

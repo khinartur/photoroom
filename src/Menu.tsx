@@ -10,6 +10,10 @@ export const Menu = observer(() => {
     const appState = useContext(AppStateContext)
     const modalsState = useContext(ModalsStateContext)
 
+    if (appState.image !== null) {
+        return null
+    }
+
     return (
         <div className="flex h-full flex-col gap-4 p-4 w-[280px] overflow-y-auto border-r border-black-alpha-1">
             <User />

@@ -5,6 +5,8 @@ type AppPage = 'DESIGNS' | 'CREATE'
 
 export class AppState {
     page: AppPage = 'DESIGNS'
+    // @todo: make setter and set page to EDITOR
+    image: HTMLImageElement | null = null
 
     constructor() {
         makeAutoObservable(this)
