@@ -3,6 +3,7 @@ import {observer} from 'mobx-react-lite'
 import {AppStateContext} from '../../state/app'
 import {EditorStateContext} from '../../state/editor'
 import {Layer} from './Layer'
+import {EmojiSelector} from './Tools/EmojiSelector'
 
 export const Sidebar = observer(() => {
     const appState = useContext(AppStateContext)
@@ -10,7 +11,7 @@ export const Sidebar = observer(() => {
 
     const getContent = () => {
         if (editorState.selectedTool === 'EMOJI') {
-            return <div>Emoji selector</div>
+            return <EmojiSelector />
         }
 
         return (

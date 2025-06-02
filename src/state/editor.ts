@@ -5,6 +5,7 @@ type EditorTool = 'EMOJI'
 
 export class EditorState {
     selectedTool: EditorTool | null = null
+    selectedEmoji: string | null = null
 
     constructor() {
         makeAutoObservable(this)
@@ -12,6 +13,10 @@ export class EditorState {
 
     selectEmojiTool() {
         this.selectedTool = 'EMOJI'
+    }
+
+    selectEmoji(emoji: string) {
+        this.selectedEmoji = emoji
     }
 
     resetTool() {

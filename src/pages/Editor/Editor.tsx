@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef} from 'react'
+import {useContext, useEffect, useRef, useState} from 'react'
 import {observer} from 'mobx-react-lite'
 import {HomeIcon, ImagesIcon} from '../../icons'
 import {Button} from '../../ui-kit/Button'
@@ -13,6 +13,9 @@ export const EditorPage = observer(() => {
     const appState = useContext(AppStateContext)
     const editorState = useContext(EditorStateContext)
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [emojis, setEmojis] = useState<
+        {x: number; y: number; emoji: string}[]
+    >([])
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -38,23 +41,29 @@ export const EditorPage = observer(() => {
         const x = (e.clientX - rect.left) * scaleX
         const y = (e.clientY - rect.top) * scaleY
 
-        const emoji = {x, y, emoji: '😊'}
-        redrawCanvas(canvas, emoji)
+        const newEmojis = [
+            ...emojis,
+            {x, y, emoji: editorState.selectedEmoji || ''},
+        ]
+        setEmojis(newEmojis)
+        redrawCanvas(canvas, newEmojis)
     }
 
     const redrawCanvas = (
         canvas: HTMLCanvasElement,
-        emoji: {x: number; y: number; emoji: string},
+        emojisToDraw: {x: number; y: number; emoji: string}[],
     ) => {
         const ctx = canvas.getContext('2d')
-        if (!ctx || !appState.image) {
+        if (!ctx || !appState.image || !editorState.selectedEmoji) {
             return
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         ctx.drawImage(appState.image, 0, 0)
 
-        ctx.font = '32px serif'
-        ctx.fillText(emoji.emoji, emoji.x, emoji.y)
+        ctx.font = '124px serif'
+        for (const emoji of emojisToDraw) {
+            ctx.fillText(emoji.emoji, emoji.x, emoji.y)
+        }
     }
 
     return (
