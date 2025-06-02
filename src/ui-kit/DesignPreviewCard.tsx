@@ -17,7 +17,7 @@ export const DesignPreviewCard = ({previewSrc}: DesignPreviewCardProps) => {
                 <button
                     type="button"
                     className={tcn(
-                        'absolute size-8 bg-surface-high rounded-full right-2 top-2 flex items-center justify-center',
+                        'absolute size-8 bg-background-inverted rounded-full right-2 top-2 flex items-center justify-center',
                         'cursor-pointer text-content-secondary hover:text-content-primary',
                     )}
                 >

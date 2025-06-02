@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
     --color-black: #000000;
     --color-black-alpha-1: rgba(0, 0, 0, 5%);
@@ -10,6 +12,7 @@
     --color-black-alpha-6: rgba(0, 0, 0, 42%);
     --color-black-alpha-7: rgba(0, 0, 0, 56%);
     --color-black-alpha-8: rgba(0, 0, 0, 75%);
+    --color-grey: #151617;
     --color-white: #ffffff;
     --color-white-1: #f2f3f7;
     --color-white-2: #e6e7ed;
@@ -69,6 +72,7 @@
     --color-secondary-coral-cherry: #ff538c;
     --color-secondary-navy: #000255;
     --color-secondary-lilac: #e7e8ff;
+    --color-secondary-modal: #f7f7fa;
     --color-spotlight: rgba(255, 166, 2, 0.16);
     --color-spotlight-down: rgba(255, 166, 2, 0.34);
     --color-replaceable: #00ffc2;
@@ -77,6 +81,8 @@
     --color-surface-low: var(--color-neutral-1);
     --color-surface-high: var(--color-neutral-0);
     --color-surface-higher: var(--color-neutral-0);
+    --color-background-primary: var(--color-white);
+    --color-background-secondary: var(--color-neutral-7);
     --color-background-default: var(--color-neutral-9);
     --color-background-hover: var(--color-neutral-8);
     --color-background-down: var(--color-neutral-9);
@@ -98,9 +104,6 @@
     --color-background-negative: var(--color-negative-500);
     --color-background-negative-hover: var(--color-negative-400);
     --color-background-negative-down: var(--color-negative-600);
-    --color-background-negative-subdued: var(--color-negative-alpha-1);
-    --color-background-negative-subdued-hover: var(--color-negative-alpha-2);
-    --color-background-negative-subdued-down: var(--color-negative-alpha-3);
     --color-background-tab: var(--color-neutral-0);
     --color-background-bar: var(--color-neutral-0-80);
     --color-background-white: var(--color-white);
@@ -109,11 +112,11 @@
     --color-background-white-subdued: var(--color-white-alpha-3);
     --color-background-white-subdued-hover: var(--color-white-alpha-4);
     --color-background-white-subdued-down: var(--color-white-alpha-5);
-    --color-background-spotlight: var(--color-spotlight);
-    --color-background-spotlight-down: var(--color-spotlight-down);
     --color-background-inverted: var(--color-white);
-    --color-background-promotional: var(--color-secondary-lilac);
+    --color-background-overlay: var(--color-black-alpha-4);
+    --color-background-modal: var(--color-secondary-modal);
     --color-content-primary: var(--color-neutral-9);
+    --color-content-inverted: var(--color-white);
     --color-content-subdued-primary: var(--color-neutral-8);
     --color-content-secondary: var(--color-neutral-7);
     --color-content-tertiary: var(--color-neutral-6);
@@ -131,22 +134,34 @@
     --color-content-white-secondary: var(--color-white-alpha-8);
     --color-content-black-primary: var(--color-black);
     --color-content-white-primary-inverted: var(--color-white);
-    --color-content-white-subdued-primary-inverted: var(--color-white-alpha-8);
     --color-misc-divider: var(--color-neutral-alpha-2);
-    --color-misc-divider-ios: var(--color-neutral-alpha-3);
     --color-misc-border: var(--color-neutral-alpha-3);
-    --color-misc-border-emphasized: var(--color-neutral-alpha-5);
-    --color-misc-border-box: var(--color-neutral-3);
-    --color-misc-border-box-hover: var(--color-neutral-4);
-    --color-misc-border-box-down: var(--color-neutral-5);
-    --color-misc-stack-layer-1: var(--color-neutral-4);
-    --color-misc-stack-layer-2: var(--color-neutral-2);
-    --color-misc-focus-indicator: var(--color-accent-alpha-5);
-    --color-misc-focus-indicator-subdued: var(--color-accent-alpha-2);
-    --color-misc-white-focus-indicator: var(--color-white);
-    --color-misc-hairline: var(--color-neutral-alpha-3);
-    --color-misc-visual-hover: var(--color-black-alpha-2);
-    --color-misc-visual-down: var(--color-black-alpha-3);
+}
+
+@layer theme {
+    .dark {
+        --color-background-default: var(--color-white);
+        --color-background-primary: var(--color-neutral-9);
+        --color-surface-high: var(--color-neutral-9);
+        --color-surface-higher: var(--color-neutral-9);
+        --color-background-accent: var(--color-accent-600);
+        --color-background-accent-hover: var(--color-accent-500);
+        --color-background-accent-down: var(--color-accent-600);
+        --color-background-accent-subdued: var(--color-accent-alpha-5);
+        --color-background-accent-subdued-hover: var(--color-accent-alpha-4);
+        --color-background-accent-hover: var(--color-accent-300);
+        --color-background-subdued: var(--color-neutral-8);
+        --color-background-subdued-hover: var(--color-neutral-7);
+        --color-background-subdued-down: var(--color-neutral-6);
+        --color-content-primary: var(--color-white);
+        --color-content-inverted: var(--color-neutral-9);
+        --color-content-accent: var(--color-accent-300);
+        --color-background-overlay: var(--color-white-alpha-1);
+        --color-background-modal: var(--color-grey);
+        --color-background-inverted: var(--color-neutral-9);
+        --color-misc-border: var(--color-white-alpha-4);
+        --color-surface-low: var(--color-grey);
+    }
 }
 
 :root {

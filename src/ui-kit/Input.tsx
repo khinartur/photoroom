@@ -19,8 +19,8 @@ export const Input = ({label, ...props}: InputProps) => {
                 type="text"
                 className={tcn(
                     'h-10 w-full px-4 py-2 appearance-none outline-none rounded-[10px]',
-                    'bg-white border border-black-alpha-3 hover:border-neutral-4 focus-visible:border-content-accent',
-                    'text-black text-sm font-medium',
+                    'bg-background-primary border border-misc-border hover:border-misc-border-hover focus-visible:border-content-accent',
+                    'text-content-primary text-sm font-medium',
                 )}
                 {...props}
             />

@@ -31,7 +31,7 @@ export const ExportButton = observer(
                 content={
                     <div
                         className={tcn(
-                            'flex flex-col gap-4 w-[360px] bg-white outline-none p-4',
+                            'flex flex-col gap-4 w-[360px] bg-background-primary outline-none p-4',
                             'border border-misc-border rounded-[10px]',
                         )}
                     >

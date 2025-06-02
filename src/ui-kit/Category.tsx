@@ -6,7 +6,9 @@ type CategoryProps = {
 export const Category = ({title, content}: CategoryProps) => {
     return (
         <div className="flex flex-col gap-4">
-            <span className="text-[20px] font-semibold">{title}</span>
+            <span className="text-[20px] font-semibold text-content-primary">
+                {title}
+            </span>
             {content}
         </div>
     )

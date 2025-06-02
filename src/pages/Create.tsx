@@ -19,7 +19,7 @@ export const CreatePage = observer(() => {
                 content={
                     <TemplateCard
                         imageSrc="/emojis.png"
-                        name="Emojis"
+                        name="Add Emojis"
                         onClick={onTemplateClick}
                     />
                 }

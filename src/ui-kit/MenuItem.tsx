@@ -16,7 +16,7 @@ export const MenuItem = ({
     return (
         <div
             className={tcn(
-                'flex items-center justify-start gap-3 rounded-[10px] p-2.5 cursor-pointer hover:bg-background-subdued-hover',
+                'group flex items-center justify-start gap-3 rounded-[10px] p-2.5 cursor-pointer hover:bg-background-subdued-hover',
                 {
                     'bg-background-accent-subdued hover:bg-background-accent-subdued':
                         active,
@@ -27,8 +27,11 @@ export const MenuItem = ({
             {icon && (
                 <div
                     className={tcn(
-                        'flex items-center justify-center size-5 text-content-secondary',
-                        {'text-content-accent': active},
+                        'flex items-center justify-center size-5 text-content-secondary dark:group-hover:text-content-primary',
+                        {
+                            'text-content-accent dark:group-hover:text-content-accent':
+                                active,
+                        },
                     )}
                 >
                     {icon}

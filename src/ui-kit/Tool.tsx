@@ -11,7 +11,7 @@ export const Tool = ({icon, onClick, children}: ToolProps) => {
             type="button"
             className={tcn(
                 'flex flex-col gap-0.5 items-center justify-center overflow-hidden rounded-[10px] outline-none',
-                'h-[54px] w-20 px-2 appearance-none text-xs font-medium cursor-pointer',
+                'h-[54px] w-20 px-2 appearance-none text-xs font-medium cursor-pointer text-content-primary',
                 'hover:bg-background-subdued-hover active:bg-background-subdued-hover',
             )}
             onClick={onClick}

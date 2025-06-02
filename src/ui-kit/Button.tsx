@@ -22,11 +22,11 @@ export const Button = ({
                 'flex gap-2 items-center justify-center overflow-hidden rounded-[10px] outline-none',
                 'h-10 px-4 appearance-none font-medium text-[14px] cursor-pointer',
                 {
-                    'bg-content-accent hover:bg-accent-400 active:bg-accent-600 text-white':
+                    'bg-background-accent hover:bg-background-accent-hover active:bg-background-accent-down text-white':
                         variant === 'primary',
-                    'bg-background-subdued hover:bg-background-subdued-hover actvie:bg-background-subdued-down  text-black':
+                    'bg-background-subdued hover:bg-background-subdued-hover active:bg-background-subdued-down  text-content-primary':
                         variant === 'secondary',
-                    'bg-accent-alpha-1 hover:bg-accent-alpha-2 active:bg-accent-alpha-3 text-content-accent':
+                    'bg-background-accent-subdued hover:bg-background-accent-subdued-hover active:bg-background-accent-subdued-down text-content-accent':
                         variant === 'accent',
                     'w-10 px-0': !children,
                 },

@@ -20,7 +20,7 @@ export const Modal = ({
         <Dialog.Root open>
             <Dialog.Portal container={mountNode}>
                 <Dialog.Overlay
-                    className="fixed inset-0 h-screen w-screen bg-black-alpha-4"
+                    className="fixed inset-0 h-screen w-screen bg-background-overlay"
                     onClick={onClose}
                 />
                 <Dialog.Content
@@ -42,7 +42,7 @@ export const Modal = ({
                         <div
                             className={tcn(
                                 'absolute top-4 right-4 flex items-center justify-center rounded-full size-8 cursor-pointer',
-                                'bg-background-default text-white',
+                                'bg-background-default text-content-inverted',
                             )}
                         >
                             <div className="size-4 flex items-center justify-center">

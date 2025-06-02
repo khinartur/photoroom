@@ -14,7 +14,7 @@ export const Folder = ({name}: FolderProps) => {
             }}
         >
             <div className="flex items-center justify-center size-16 bg-background-subdued">
-                <div className="flex items-center justify-center size-6 rounded-[3px] text-content-secondary">
+                <div className="flex items-center justify-center size-6 rounded-[3px] text-content-secondary dark:text-content-primary">
                     <FolderIcon />
                 </div>
             </div>

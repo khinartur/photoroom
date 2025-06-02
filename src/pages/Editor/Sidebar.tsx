@@ -4,6 +4,7 @@ import {AppStateContext} from '../../state/app'
 import {EditorStateContext} from '../../state/editor'
 import {Layer} from './Layer'
 import {EmojiSelector} from './Tools/EmojiSelector'
+import {tcn} from '../../utils/tcn'
 
 export const Sidebar = observer(() => {
     const appState = useContext(AppStateContext)
@@ -22,7 +23,12 @@ export const Sidebar = observer(() => {
     }
 
     return (
-        <div className="w-[360px] h-full shrink-0 shadow-[-1px_0_0_0] shadow-neutral-2">
+        <div
+            className={tcn(
+                'w-[360px] h-full shrink-0 shadow-[-1px_0_0_0] shadow-neutral-2',
+                'dark:shadow-[rgba(255,255,255,0.1)]',
+            )}
+        >
             {getContent()}
         </div>
     )
