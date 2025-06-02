@@ -13,6 +13,7 @@ export const Button = ({
     className,
     variant = 'primary',
     icon,
+    ...props
 }: ButtonProps) => {
     return (
         <button
@@ -32,6 +33,7 @@ export const Button = ({
                 },
             )}
             onClick={onClick}
+            {...props}
         >
             {icon && (
                 <div className="flex items-center justify-center size-5">

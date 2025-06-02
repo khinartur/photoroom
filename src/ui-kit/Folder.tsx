@@ -1,10 +1,11 @@
 import {FolderIcon} from '../icons'
+import type {Folder as FolderType} from '../state/folders'
 
 type FolderProps = {
-    name: string
+    folder: FolderType
 }
 
-export const Folder = ({name}: FolderProps) => {
+export const Folder = ({folder}: FolderProps) => {
     return (
         <button
             type="button"
@@ -19,7 +20,7 @@ export const Folder = ({name}: FolderProps) => {
                 </div>
             </div>
             <span className="text-content-primary text-[14px] font-semibold">
-                {name}
+                {folder.name}
             </span>
         </button>
     )

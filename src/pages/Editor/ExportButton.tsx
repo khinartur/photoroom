@@ -10,7 +10,9 @@ export const ExportButton = observer(
     ({canvas}: {canvas: HTMLCanvasElement | null}) => {
         const [fileName, setFileName] = useState('')
 
-        const onExport = () => {
+        const onExport = (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault()
+
             if (!canvas || !fileName) {
                 // @todo: add validation for file name
                 return
@@ -38,14 +40,21 @@ export const ExportButton = observer(
                         <span className="text-[17px] text-content-primary font-bold">
                             Download
                         </span>
-                        <div className="flex flex-col gap-6">
-                            <Input
-                                label="File name"
-                                value={fileName}
-                                onChange={e => setFileName(e.target.value)}
-                            />
-                            <Button onClick={onExport}>Download</Button>
-                        </div>
+                        <form onSubmit={onExport}>
+                            <div className="flex flex-col gap-6">
+                                <Input
+                                    label="File name"
+                                    value={fileName}
+                                    onChange={e => setFileName(e.target.value)}
+                                />
+                                <Button
+                                    type="submit"
+                                    disabled={fileName.length === 0}
+                                >
+                                    Download
+                                </Button>
+                            </div>
+                        </form>
                     </div>
                 }
             />
