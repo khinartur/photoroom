@@ -1,10 +1,10 @@
+import {useContext} from 'react'
 import {observer} from 'mobx-react-lite'
 import {CreateIcon, SettingsIcon, StackIcon} from './icons'
 import {MenuItem} from './ui-kit/MenuItem'
-import {User} from './User'
-import {useContext} from 'react'
 import {AppStateContext} from './state/app'
 import {ModalsStateContext} from './state/modals'
+import {UserMenu} from './UserMenu'
 
 export const Menu = observer(() => {
     const appState = useContext(AppStateContext)
@@ -16,7 +16,7 @@ export const Menu = observer(() => {
 
     return (
         <div className="flex h-full flex-col gap-4 p-4 w-[280px] overflow-y-auto border-r border-black-alpha-1">
-            <User />
+            <UserMenu />
             <div className="flex flex-1 flex-col gap-4">
                 <MenuItem
                     label="Create"

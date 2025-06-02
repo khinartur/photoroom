@@ -1,11 +1,18 @@
-import {ExpandIcon} from './icons'
 import {Avatar} from './ui-kit/Avatar'
 
-export const User = () => {
+type UserProps = {
+    icon: React.ReactNode
+    onClick?: () => void
+}
+
+export const User = ({icon, onClick}: UserProps) => {
     return (
-        <div className="group flex gap-4 items-center cursor-pointer p-3 hover:bg-background-subdued-hover rounded-[6px]">
+        <div
+            className="group flex gap-4 items-center cursor-pointer p-3 hover:bg-background-subdued-hover rounded-[6px]"
+            onClick={onClick}
+        >
             <Avatar firstName="John" />
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 items-start flex-col">
                 <span className="text-content-primary font-semibold text-[14px]">
                     Personal space
                 </span>
@@ -13,9 +20,7 @@ export const User = () => {
                     Only you
                 </span>
             </div>
-            <div className="flex items-center justify-center size-5 text-content-primary">
-                <ExpandIcon />
-            </div>
+            {icon}
         </div>
     )
 }
