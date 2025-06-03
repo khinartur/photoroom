@@ -25,6 +25,7 @@ export const ImageSelector = observer(
                         image: img,
                         layers: [
                             {
+                                id: crypto.randomUUID(),
                                 type: 'IMAGE',
                                 name: 'Photo',
                                 image: img,
