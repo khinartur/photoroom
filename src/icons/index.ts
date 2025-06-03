@@ -1,3 +1,4 @@
+export {default as BrushIcon} from './brush.svg'
 export {default as CloseIcon} from './close.svg'
 export {default as DotsIcon} from './dots.svg'
 export {default as DownloadIcon} from './download.svg'

@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react-lite'
-import {NewFolderIcon, PlusIcon} from '../icons'
+import {BrushIcon, NewFolderIcon, PlusIcon} from '../icons'
 import {Button} from '../ui-kit/Button'
 import {Category} from '../ui-kit/Category'
 import {DesignPreviewCard} from '../ui-kit/DesignPreviewCard'
@@ -39,7 +39,32 @@ export const DesignsPage = observer(() => {
                 </div>
             }
         >
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col flex-1 gap-6">
+                {foldersState.folders.length === 0 &&
+                    designsState.designs.length === 0 && (
+                        <div className="flex flex-1 items-center justify-center">
+                            <div className="flex flex-col items-center gap-6">
+                                <div className="flex items-center justify-center size-10 text-content-tertiary">
+                                    <BrushIcon />
+                                </div>
+                                <div className="flex flex-col gap-2 text-center">
+                                    <h1 className="text-xl font-semibold text-content-primary">
+                                        No designs yet
+                                    </h1>
+                                    <p className="text-content-secondary text-sm">
+                                        Your designs will show up here. Get
+                                        started by creating your first design!
+                                    </p>
+                                </div>
+                                <Button
+                                    icon={<PlusIcon />}
+                                    onClick={() => appState.goToCreatePage()}
+                                >
+                                    Create a design
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 {foldersState.folders.length > 0 && (
                     <Category
                         title="Folders"
