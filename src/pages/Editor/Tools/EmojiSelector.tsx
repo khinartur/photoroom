@@ -1,10 +1,9 @@
-import {useContext} from 'react'
 import {observer} from 'mobx-react-lite'
 import {tcn} from '../../../utils/tcn'
-import {EditorStateContext} from '../../../state/editor'
+import {useEditorState} from '../../../providers/editor'
 
 export const EmojiSelector = observer(() => {
-    const editorState = useContext(EditorStateContext)
+    const editorState = useEditorState()
 
     return (
         <div className="flex flex-col gap-3 p-4">

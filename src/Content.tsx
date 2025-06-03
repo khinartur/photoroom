@@ -1,12 +1,11 @@
 import {observer} from 'mobx-react-lite'
-import {useContext} from 'react'
-import {AppStateContext} from './state/app'
+import {useAppState} from './providers/app'
 import {DesignsPage} from './pages/Designs'
 import {CreatePage} from './pages/Create'
 import {EditorPage} from './pages/Editor'
 
 export const Content = observer(() => {
-    const appState = useContext(AppStateContext)
+    const appState = useAppState()
 
     if (appState.image !== null) {
         return <EditorPage />

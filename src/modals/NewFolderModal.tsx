@@ -1,15 +1,15 @@
 import {observer} from 'mobx-react-lite'
-import {useContext, useState} from 'react'
-import {ModalsStateContext} from '../state/modals'
-import {FoldersStateContext} from '../state/folders'
+import {useState} from 'react'
+import {useFoldersState} from '../providers/folders'
+import {useModalsState} from '../providers/modals'
 import type {CommonModalProps} from '.'
 import {Modal} from '../ui-kit/Modal'
 import {Button} from '../ui-kit/Button'
 import {Input} from '../ui-kit/Input'
 
 export const NewFolderModal = observer(({mountNode}: CommonModalProps) => {
-    const modalsState = useContext(ModalsStateContext)
-    const foldersState = useContext(FoldersStateContext)
+    const modalsState = useModalsState()
+    const foldersState = useFoldersState()
     const [folderName, setFolderName] = useState('')
 
     const onCreate = (e: React.FormEvent<HTMLFormElement>) => {

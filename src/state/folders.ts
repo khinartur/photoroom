@@ -1,5 +1,7 @@
-import {makeAutoObservable} from 'mobx'
-import {createContext} from 'react'
+import type {IDBPDatabase} from 'idb'
+import {makeAutoObservable, reaction, runInAction, toJS} from 'mobx'
+import type {PhotoroomDBSchema} from '../utils/idb'
+import {loadFoldersFromDB, saveFoldersToDB} from '../utils/idb'
 
 export type Folder = {
     id: string
@@ -7,17 +9,32 @@ export type Folder = {
 }
 
 export class FoldersState {
+    db: IDBPDatabase<PhotoroomDBSchema>
+
     folders: Folder[] = []
 
-    constructor() {
+    constructor(db: IDBPDatabase<PhotoroomDBSchema>) {
         makeAutoObservable(this)
+        this.db = db
+        this.init()
+
+        reaction(
+            () => this.folders,
+            newVal => {
+                const plainFolders = toJS(newVal)
+                saveFoldersToDB(this.db, plainFolders)
+            },
+        )
+    }
+
+    async init() {
+        const storedFolders = await loadFoldersFromDB(this.db)
+        runInAction(() => {
+            this.folders = storedFolders ?? []
+        })
     }
 
     addFolder(folder: Folder) {
-        this.folders.push(folder)
+        this.folders = [...this.folders, folder]
     }
 }
-
-export const FoldersStateContext = createContext<FoldersState>(
-    new FoldersState(),
-)

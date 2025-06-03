@@ -1,14 +1,18 @@
 import {makeAutoObservable} from 'mobx'
-import {createContext} from 'react'
+import type {IDBPDatabase} from 'idb'
+import type {PhotoroomDBSchema} from '../utils/idb'
 
 type EditorTool = 'EMOJI'
 
 export class EditorState {
+    db: IDBPDatabase<PhotoroomDBSchema>
+
     selectedTool: EditorTool | null = null
     selectedEmoji: string | null = null
 
-    constructor() {
+    constructor(db: IDBPDatabase<PhotoroomDBSchema>) {
         makeAutoObservable(this)
+        this.db = db
     }
 
     selectEmojiTool() {
@@ -23,5 +27,3 @@ export class EditorState {
         this.selectedTool = null
     }
 }
-
-export const EditorStateContext = createContext<EditorState>(new EditorState())

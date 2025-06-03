@@ -1,15 +1,14 @@
-import {useContext} from 'react'
 import {observer} from 'mobx-react-lite'
+import {useAppState} from '../providers/app'
+import {useModalsState} from '../providers/modals'
 import {Modal} from '../ui-kit/Modal'
-import {AppStateContext} from '../state/app'
-import {ModalsStateContext} from '../state/modals'
 import type {CommonModalProps} from '.'
 import {MenuItem} from '../ui-kit/MenuItem'
 import {Toggle} from '../ui-kit/Toggle'
 
 export const SettingsModal = observer(({mountNode}: CommonModalProps) => {
-    const appState = useContext(AppStateContext)
-    const modalsState = useContext(ModalsStateContext)
+    const appState = useAppState()
+    const modalsState = useModalsState()
 
     return (
         <Modal

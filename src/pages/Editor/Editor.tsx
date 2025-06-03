@@ -1,17 +1,17 @@
-import {useContext, useEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {observer} from 'mobx-react-lite'
+import {useAppState} from '../../providers/app'
 import {HomeIcon, ImagesIcon} from '../../icons'
 import {Button} from '../../ui-kit/Button'
-import {AppStateContext} from '../../state/app'
-import {EditorStateContext} from '../../state/editor'
 import {tcn} from '../../utils/tcn'
 import {Tool} from '../../ui-kit/Tool'
 import {ExportButton} from './ExportButton'
 import {Sidebar} from './Sidebar'
+import {useEditorState} from '../../providers/editor'
 
 export const EditorPage = observer(() => {
-    const appState = useContext(AppStateContext)
-    const editorState = useContext(EditorStateContext)
+    const appState = useAppState()
+    const editorState = useEditorState()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [emojis, setEmojis] = useState<
         {x: number; y: number; emoji: string}[]

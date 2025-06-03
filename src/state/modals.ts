@@ -1,5 +1,4 @@
 import {makeAutoObservable} from 'mobx'
-import {createContext} from 'react'
 
 type ModalType = 'NEW_FOLDER' | 'SETTINGS'
 
@@ -22,5 +21,3 @@ export class ModalsState {
         this.openModal = null
     }
 }
-
-export const ModalsStateContext = createContext<ModalsState>(new ModalsState())

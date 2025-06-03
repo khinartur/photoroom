@@ -5,15 +5,14 @@ import {Category} from '../ui-kit/Category'
 import {DesignPreviewCard} from '../ui-kit/DesignPreviewCard'
 import {Folder} from '../ui-kit/Folder'
 import {PageLayout} from '../ui-kit/PageLayout'
-import {AppStateContext} from '../state/app'
-import {useContext} from 'react'
-import {ModalsStateContext} from '../state/modals'
-import {FoldersStateContext} from '../state/folders'
+import {useAppState} from '../providers/app'
+import {useFoldersState} from '../providers/folders'
+import {useModalsState} from '../providers/modals'
 
 export const DesignsPage = observer(() => {
-    const appState = useContext(AppStateContext)
-    const modalsState = useContext(ModalsStateContext)
-    const foldersState = useContext(FoldersStateContext)
+    const appState = useAppState()
+    const modalsState = useModalsState()
+    const foldersState = useFoldersState()
 
     return (
         <PageLayout

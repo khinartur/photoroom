@@ -1,14 +1,13 @@
-import {useContext} from 'react'
 import {observer} from 'mobx-react-lite'
 import {CreateIcon, SettingsIcon, StackIcon} from './icons'
 import {MenuItem} from './ui-kit/MenuItem'
-import {AppStateContext} from './state/app'
-import {ModalsStateContext} from './state/modals'
 import {UserMenu} from './UserMenu'
+import {useAppState} from './providers/app'
+import {useModalsState} from './providers/modals'
 
 export const Menu = observer(() => {
-    const appState = useContext(AppStateContext)
-    const modalsState = useContext(ModalsStateContext)
+    const appState = useAppState()
+    const modalsState = useModalsState()
 
     if (appState.image !== null) {
         return null

@@ -1,14 +1,13 @@
-import {useContext} from 'react'
 import {observer} from 'mobx-react-lite'
+import {useAppState} from './providers/app'
 import {tcn} from './utils/tcn'
-import {AppStateContext} from './state/app'
 import {ExpandIcon} from './icons'
 import {User} from './User'
 import {Dropdown} from './ui-kit/Dropdown'
 import {Badge} from './ui-kit/Badge'
 
 export const UserMenu = observer(() => {
-    const appState = useContext(AppStateContext)
+    const appState = useAppState()
 
     return (
         <Dropdown

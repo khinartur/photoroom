@@ -1,10 +1,10 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import {observer} from 'mobx-react-lite'
-import {AppStateContext} from './state/app'
+import {useAppState} from './providers/app'
 
 export const ImageSelector = observer(
     React.forwardRef<HTMLInputElement>((_, ref) => {
-        const appState = useContext(AppStateContext)
+        const appState = useAppState()
 
         const onImageChange = ({
             target,

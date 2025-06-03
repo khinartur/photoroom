@@ -1,14 +1,13 @@
-import {useContext} from 'react'
 import {observer} from 'mobx-react-lite'
-import {AppStateContext} from '../../state/app'
-import {EditorStateContext} from '../../state/editor'
+import {useAppState} from '../../providers/app'
+import {useEditorState} from '../../providers/editor'
 import {Layer} from './Layer'
 import {EmojiSelector} from './Tools/EmojiSelector'
 import {tcn} from '../../utils/tcn'
 
 export const Sidebar = observer(() => {
-    const appState = useContext(AppStateContext)
-    const editorState = useContext(EditorStateContext)
+    const appState = useAppState()
+    const editorState = useEditorState()
 
     const getContent = () => {
         if (editorState.selectedTool === 'EMOJI') {
