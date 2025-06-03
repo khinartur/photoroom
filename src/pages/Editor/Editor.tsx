@@ -32,9 +32,13 @@ export const EditorPage = observer(() => {
 
             for (const layer of layers) {
                 if (layer.type === 'EMOJI') {
-                    // @todo: change font size
-                    ctx.font = '124px serif'
-                    ctx.fillText(layer.emoji, layer.x - 62, layer.y + 62)
+                    const fontSize = design.image.width / 10
+                    ctx.font = `${fontSize}px serif`
+                    ctx.fillText(
+                        layer.emoji,
+                        layer.x - fontSize / 2,
+                        layer.y + fontSize / 2,
+                    )
                 }
             }
         },
@@ -88,6 +92,7 @@ export const EditorPage = observer(() => {
                     variant="secondary"
                     icon={<HomeIcon />}
                     onClick={() => {
+                        editorState.resetTool()
                         appState.setActiveDesignId(null)
                         appState.goToDesignsPage()
                     }}
@@ -102,7 +107,7 @@ export const EditorPage = observer(() => {
             </div>
             <div className="flex h-full w-full overflow-hidden">
                 <div
-                    className="flex justify-center flex-1 h-full min-w-0 bg-surface-low p-10"
+                    className="flex justify-center flex-1 h-full min-w-0 bg-surface-low p-10 overflow-hidden"
                     onClick={() => editorState.resetTool()}
                 >
                     <canvas
@@ -111,10 +116,6 @@ export const EditorPage = observer(() => {
                             'cursor-pointer': editorState.selectedTool !== null,
                         })}
                         onClick={onCanvasClick}
-                        style={{
-                            width: 'auto',
-                            height: '100%',
-                        }}
                     />
                 </div>
                 <Sidebar />

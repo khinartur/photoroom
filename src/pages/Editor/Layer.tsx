@@ -33,7 +33,9 @@ export const Layer: React.FC<LayerProps> = ({layer}) => {
                 'bg-background-subdued',
             )}
         >
-            {leftContent()}
+            <div className="flex items-center justify-center overflow-hidden size-10">
+                {leftContent()}
+            </div>
             <span className="text-sm font-medium text-content-primary">
                 {layer.name}
             </span>
