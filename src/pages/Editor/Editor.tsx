@@ -93,7 +93,6 @@ export const EditorPage = observer(() => {
                     icon={<HomeIcon />}
                     onClick={() => {
                         editorState.resetTool()
-                        appState.setActiveDesignId(null)
                         appState.goToDesignsPage()
                     }}
                 />

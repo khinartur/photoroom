@@ -7,15 +7,15 @@ import {EditorPage} from './pages/Editor'
 export const Content = observer(() => {
     const appState = useAppState()
 
-    if (appState.activeDesignId !== null) {
+    if (appState.page.type === 'EDITOR') {
         return <EditorPage />
     }
 
-    if (appState.page === 'DESIGNS') {
+    if (appState.page.type === 'DESIGNS') {
         return <DesignsPage />
     }
 
-    if (appState.page === 'CREATE') {
+    if (appState.page.type === 'CREATE') {
         return <CreatePage />
     }
 

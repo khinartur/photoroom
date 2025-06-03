@@ -33,7 +33,7 @@ export const ImageSelector = observer(
                         ],
                     }
                     designsState.addDesign(newDesign)
-                    appState.setActiveDesignId(newDesign.id)
+                    appState.goToEditorPage(newDesign.id)
                 }
                 img.src = reader.result as string
             }

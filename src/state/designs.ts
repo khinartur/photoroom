@@ -63,7 +63,10 @@ export class DesignsState {
     }
 
     get activeDesign() {
-        const id = this.rootState.appState.activeDesignId
+        const id =
+            this.rootState.appState.page.type === 'EDITOR'
+                ? this.rootState.appState.page.designId
+                : null
         if (!id) {
             return null
         }

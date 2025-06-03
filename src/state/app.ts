@@ -7,16 +7,33 @@ import {
     type PhotoroomDBSchema,
 } from '../utils/idb'
 
-type AppPage = 'DESIGNS' | 'CREATE'
+type DesignsPage = {
+    type: 'DESIGNS'
+}
+
+type CreatePage = {
+    type: 'CREATE'
+}
+
+type FolderPage = {
+    type: 'FOLDER'
+    folderId: string
+}
+
+type EditorPage = {
+    type: 'EDITOR'
+    designId: string
+}
+
+type AppPage = DesignsPage | CreatePage | FolderPage | EditorPage
 export type AppTheme = 'LIGHT' | 'DARK'
 
 export class AppState {
     rootState: RootState
     db: IDBPDatabase<PhotoroomDBSchema>
 
-    page: AppPage = 'DESIGNS'
+    page: AppPage = {type: 'DESIGNS'}
     theme: AppTheme = 'LIGHT'
-    activeDesignId: string | null = null
 
     constructor(rootState: RootState, db: IDBPDatabase<PhotoroomDBSchema>) {
         makeAutoObservable(this)
@@ -40,19 +57,23 @@ export class AppState {
         })
     }
 
-    setActiveDesignId(designId: string | null) {
-        this.activeDesignId = designId
-    }
-
     setTheme(theme: AppTheme) {
         this.theme = theme
     }
 
     goToDesignsPage() {
-        this.page = 'DESIGNS'
+        this.page = {type: 'DESIGNS'}
     }
 
     goToCreatePage() {
-        this.page = 'CREATE'
+        this.page = {type: 'CREATE'}
+    }
+
+    goToFolderPage(folderId: string) {
+        this.page = {type: 'FOLDER', folderId}
+    }
+
+    goToEditorPage(designId: string) {
+        this.page = {type: 'EDITOR', designId}
     }
 }

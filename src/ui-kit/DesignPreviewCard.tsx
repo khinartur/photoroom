@@ -14,7 +14,7 @@ export const DesignPreviewCard = observer(
         return (
             <div
                 className="group relative flex items-center gap-2 border border-misc-border aspect-square rounded-[8px] cursor-pointer overflow-hidden"
-                onClick={() => appState.setActiveDesignId(design.id)}
+                onClick={() => appState.goToEditorPage(design.id)}
             >
                 <img
                     className="w-full h-full object-contain"

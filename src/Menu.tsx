@@ -8,7 +8,7 @@ export const Menu = observer(() => {
     const appState = useAppState()
     const modalsState = useModalsState()
 
-    if (appState.activeDesignId !== null) {
+    if (appState.page.type === 'EDITOR') {
         return null
     }
 
@@ -20,7 +20,7 @@ export const Menu = observer(() => {
                     label="Create"
                     icon={<CreateIcon />}
                     onClick={() => appState.goToCreatePage()}
-                    active={appState.page === 'CREATE'}
+                    active={appState.page.type === 'CREATE'}
                 />
                 <div className="flex flex-col flex-1">
                     <div className="p-3">
@@ -32,7 +32,7 @@ export const Menu = observer(() => {
                         label="Designs"
                         icon={<StackIcon />}
                         onClick={() => appState.goToDesignsPage()}
-                        active={appState.page === 'DESIGNS'}
+                        active={appState.page.type === 'DESIGNS'}
                     />
                 </div>
                 <MenuItem
