@@ -1,32 +1,64 @@
-import {useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef} from 'react'
 import {observer} from 'mobx-react-lite'
-import {useAppState} from '../../providers/app'
+import {
+    useAppState,
+    useDesignsState,
+    useEditorState,
+} from '../../providers/root'
+import type {Layer} from '../../state/designs'
 import {HomeIcon, ImagesIcon} from '../../icons'
 import {Button} from '../../ui-kit/Button'
 import {tcn} from '../../utils/tcn'
 import {Tool} from '../../ui-kit/Tool'
 import {ExportButton} from './ExportButton'
 import {Sidebar} from './Sidebar'
-import {useEditorState} from '../../providers/editor'
 
 export const EditorPage = observer(() => {
     const appState = useAppState()
+    const designsState = useDesignsState()
     const editorState = useEditorState()
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [emojis, setEmojis] = useState<
-        {x: number; y: number; emoji: string}[]
-    >([])
+
+    const design = designsState.activeDesign
+
+    const redrawCanvas = useCallback(
+        (canvas: HTMLCanvasElement, layers: Layer[]) => {
+            const ctx = canvas.getContext('2d')
+            if (!ctx || !design) {
+                return
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.drawImage(design.image, 0, 0)
+
+            for (const layer of layers) {
+                if (layer.type === 'EMOJI') {
+                    // @todo: change font size
+                    ctx.font = '124px serif'
+                    ctx.fillText(layer.emoji, layer.x - 62, layer.y + 62)
+                }
+            }
+        },
+        [design],
+    )
 
     useEffect(() => {
         const canvas = canvasRef.current
-        if (!canvas || !appState.image) {
+        if (!canvas || !design?.image) {
             return
         }
-        canvas.width = appState.image.width
-        canvas.height = appState.image.height
+        canvas.width = design.image.width
+        canvas.height = design.image.height
         const ctx = canvas.getContext('2d')
-        ctx?.drawImage(appState.image, 0, 0)
-    }, [appState.image])
+        ctx?.drawImage(design.image, 0, 0)
+    }, [design?.image])
+
+    useEffect(() => {
+        const canvas = canvasRef.current
+        if (!canvas || !design?.layers) {
+            return
+        }
+        redrawCanvas(canvas, design.layers)
+    }, [design?.layers, redrawCanvas])
 
     const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
         e.stopPropagation()
@@ -41,29 +73,7 @@ export const EditorPage = observer(() => {
         const x = (e.clientX - rect.left) * scaleX
         const y = (e.clientY - rect.top) * scaleY
 
-        const newEmojis = [
-            ...emojis,
-            {x, y, emoji: editorState.selectedEmoji || ''},
-        ]
-        setEmojis(newEmojis)
-        redrawCanvas(canvas, newEmojis)
-    }
-
-    const redrawCanvas = (
-        canvas: HTMLCanvasElement,
-        emojisToDraw: {x: number; y: number; emoji: string}[],
-    ) => {
-        const ctx = canvas.getContext('2d')
-        if (!ctx || !appState.image || !editorState.selectedEmoji) {
-            return
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(appState.image, 0, 0)
-
-        ctx.font = '124px serif'
-        for (const emoji of emojisToDraw) {
-            ctx.fillText(emoji.emoji, emoji.x, emoji.y)
-        }
+        editorState.selectedTool(x, y)
     }
 
     return (
@@ -78,7 +88,7 @@ export const EditorPage = observer(() => {
                     variant="secondary"
                     icon={<HomeIcon />}
                     onClick={() => {
-                        appState.image = null
+                        appState.setActiveDesignId(null)
                         appState.goToDesignsPage()
                     }}
                 />

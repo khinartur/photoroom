@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react-lite'
-import {useAppState} from './providers/app'
+import {useAppState} from './providers/root'
 import {DesignsPage} from './pages/Designs'
 import {CreatePage} from './pages/Create'
 import {EditorPage} from './pages/Editor'
@@ -7,7 +7,7 @@ import {EditorPage} from './pages/Editor'
 export const Content = observer(() => {
     const appState = useAppState()
 
-    if (appState.image !== null) {
+    if (appState.activeDesignId !== null) {
         return <EditorPage />
     }
 

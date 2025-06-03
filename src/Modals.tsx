@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react-lite'
-import {useModalsState} from './providers/modals'
+import {useModalsState} from './providers/root'
 import {NewFolderModal} from './modals/NewFolderModal'
 import {SettingsModal} from './modals/SettingsModal'
 

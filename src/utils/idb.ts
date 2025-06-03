@@ -1,15 +1,18 @@
 import type {IDBPDatabase} from 'idb'
 import {openDB} from 'idb'
 import type {AppTheme} from '../state/app'
+import type {Design} from '../state/designs'
 import type {Folder} from '../state/folders'
+import type {SerializedDesign} from './serializers'
+import {deserializeDesign, serializeDesign} from './serializers'
 
 const DB_NAME = 'PhotoroomAppDB'
 const DB_VERSION = 1
 
 export type PhotoroomDBSchema = {
     state: {
-        key: 'folders' | 'theme'
-        value: Folder[] | string
+        key: 'theme' | 'designs' | 'folders'
+        value: Design[] | Folder[] | string
     }
 }
 
@@ -21,6 +24,23 @@ export const initDB = async () => {
             }
         },
     })
+}
+
+export const saveDesignsToDB = async (
+    db: IDBPDatabase<PhotoroomDBSchema>,
+    designs: Design[],
+) => {
+    const serializedDesigns = designs.map(serializeDesign)
+    await db.put('state', serializedDesigns as unknown as Design[], 'designs')
+}
+
+export const loadDesignsFromDB = async (
+    db: IDBPDatabase<PhotoroomDBSchema>,
+): Promise<Design[]> => {
+    const result = await db.get('state', 'designs')
+    if (!result) return []
+    const serializedDesigns = result as unknown as SerializedDesign[]
+    return Promise.all(serializedDesigns.map(deserializeDesign))
 }
 
 export const saveFoldersToDB = async (

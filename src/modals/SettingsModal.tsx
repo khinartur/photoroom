@@ -1,6 +1,5 @@
 import {observer} from 'mobx-react-lite'
-import {useAppState} from '../providers/app'
-import {useModalsState} from '../providers/modals'
+import {useAppState, useModalsState} from '../providers/root'
 import {Modal} from '../ui-kit/Modal'
 import type {CommonModalProps} from '.'
 import {MenuItem} from '../ui-kit/MenuItem'

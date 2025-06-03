@@ -1,5 +1,5 @@
 import {observer} from 'mobx-react-lite'
-import {useAppState} from './providers/app'
+import {useAppState} from './providers/root'
 import {tcn} from './utils/tcn'
 import {ExpandIcon} from './icons'
 import {User} from './User'

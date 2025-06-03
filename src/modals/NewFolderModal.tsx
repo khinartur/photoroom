@@ -1,7 +1,6 @@
 import {observer} from 'mobx-react-lite'
 import {useState} from 'react'
-import {useFoldersState} from '../providers/folders'
-import {useModalsState} from '../providers/modals'
+import {useFoldersState, useModalsState} from '../providers/root'
 import type {CommonModalProps} from '.'
 import {Modal} from '../ui-kit/Modal'
 import {Button} from '../ui-kit/Button'

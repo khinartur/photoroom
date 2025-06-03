@@ -1,3 +1,4 @@
+import type {RootState} from './root'
 import {makeAutoObservable, reaction, runInAction, toJS} from 'mobx'
 import type {IDBPDatabase} from 'idb'
 import {
@@ -10,15 +11,16 @@ type AppPage = 'DESIGNS' | 'CREATE'
 export type AppTheme = 'LIGHT' | 'DARK'
 
 export class AppState {
+    rootState: RootState
     db: IDBPDatabase<PhotoroomDBSchema>
 
     page: AppPage = 'DESIGNS'
     theme: AppTheme = 'LIGHT'
-    // @todo: make setter and set page to EDITOR
-    image: HTMLImageElement | null = null
+    activeDesignId: string | null = null
 
-    constructor(db: IDBPDatabase<PhotoroomDBSchema>) {
+    constructor(rootState: RootState, db: IDBPDatabase<PhotoroomDBSchema>) {
         makeAutoObservable(this)
+        this.rootState = rootState
         this.db = db
         this.init()
 
@@ -36,6 +38,10 @@ export class AppState {
         runInAction(() => {
             this.theme = storedTheme ?? 'LIGHT'
         })
+    }
+
+    setActiveDesignId(designId: string | null) {
+        this.activeDesignId = designId
     }
 
     setTheme(theme: AppTheme) {

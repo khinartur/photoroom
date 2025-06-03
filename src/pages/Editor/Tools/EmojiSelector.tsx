@@ -1,6 +1,6 @@
 import {observer} from 'mobx-react-lite'
 import {tcn} from '../../../utils/tcn'
-import {useEditorState} from '../../../providers/editor'
+import {useEditorState} from '../../../providers/root'
 
 export const EmojiSelector = observer(() => {
     const editorState = useEditorState()

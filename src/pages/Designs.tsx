@@ -5,13 +5,17 @@ import {Category} from '../ui-kit/Category'
 import {DesignPreviewCard} from '../ui-kit/DesignPreviewCard'
 import {Folder} from '../ui-kit/Folder'
 import {PageLayout} from '../ui-kit/PageLayout'
-import {useAppState} from '../providers/app'
-import {useFoldersState} from '../providers/folders'
-import {useModalsState} from '../providers/modals'
+import {
+    useAppState,
+    useDesignsState,
+    useFoldersState,
+    useModalsState,
+} from '../providers/root'
 
 export const DesignsPage = observer(() => {
     const appState = useAppState()
     const modalsState = useModalsState()
+    const designsState = useDesignsState()
     const foldersState = useFoldersState()
 
     return (
@@ -48,15 +52,21 @@ export const DesignsPage = observer(() => {
                         }
                     />
                 )}
-                <Category
-                    title="Recent Designs"
-                    content={
-                        <div className="grid grid-cols-[repeat(auto-fill,minmax(176px,1fr))] gap-4 pb-4">
-                            <DesignPreviewCard previewSrc="/preview0.png" />
-                            <DesignPreviewCard previewSrc="/preview1.png" />
-                        </div>
-                    }
-                />
+                {designsState.designs.length > 0 && (
+                    <Category
+                        title="Recent Designs"
+                        content={
+                            <div className="grid grid-cols-[repeat(auto-fill,minmax(176px,1fr))] gap-4 pb-4">
+                                {designsState.designs.map(design => (
+                                    <DesignPreviewCard
+                                        key={design.id}
+                                        design={design}
+                                    />
+                                ))}
+                            </div>
+                        }
+                    />
+                )}
             </div>
         </PageLayout>
     )

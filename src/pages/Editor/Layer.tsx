@@ -1,11 +1,31 @@
 import {tcn} from '../../utils/tcn'
+import type {Layer as LayerType} from '../../state/designs'
 
 type LayerProps = {
-    name: string
-    src: string
+    layer: LayerType
 }
 
-export const Layer: React.FC<LayerProps> = ({name, src}) => {
+export const Layer: React.FC<LayerProps> = ({layer}) => {
+    const leftContent = () => {
+        if (layer.type === 'IMAGE') {
+            return (
+                <img
+                    className="w-10"
+                    src={layer.image.src}
+                    alt={layer.image.src}
+                />
+            )
+        }
+        if (layer.type === 'EMOJI') {
+            return (
+                <div className="flex items-center justify-center size-10">
+                    <span className="text-2xl">{layer.emoji}</span>
+                </div>
+            )
+        }
+        return null
+    }
+
     return (
         <div
             className={tcn(
@@ -13,9 +33,9 @@ export const Layer: React.FC<LayerProps> = ({name, src}) => {
                 'bg-background-subdued',
             )}
         >
-            <img className="w-10" src={src} alt={src} />
+            {leftContent()}
             <span className="text-sm font-medium text-content-primary">
-                {name}
+                {layer.name}
             </span>
         </div>
     )

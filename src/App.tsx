@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 import {observer} from 'mobx-react-lite'
-import {useAppState} from './providers/app'
+import {useAppState} from './providers/root'
 import {Menu} from './Menu'
 import {Content} from './Content'
 

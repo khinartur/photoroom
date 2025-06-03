@@ -1,10 +1,12 @@
 import React from 'react'
 import {observer} from 'mobx-react-lite'
-import {useAppState} from './providers/app'
+import {useAppState, useDesignsState} from './providers/root'
+import type {Design} from './state/designs'
 
 export const ImageSelector = observer(
     React.forwardRef<HTMLInputElement>((_, ref) => {
         const appState = useAppState()
+        const designsState = useDesignsState()
 
         const onImageChange = ({
             target,
@@ -18,7 +20,19 @@ export const ImageSelector = observer(
             reader.onload = () => {
                 const img = new Image()
                 img.onload = () => {
-                    appState.image = img
+                    const newDesign: Design = {
+                        id: crypto.randomUUID(),
+                        image: img,
+                        layers: [
+                            {
+                                type: 'IMAGE',
+                                name: 'Photo',
+                                image: img,
+                            },
+                        ],
+                    }
+                    designsState.addDesign(newDesign)
+                    appState.setActiveDesignId(newDesign.id)
                 }
                 img.src = reader.result as string
             }

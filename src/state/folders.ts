@@ -1,4 +1,5 @@
 import type {IDBPDatabase} from 'idb'
+import type {RootState} from './root'
 import {makeAutoObservable, reaction, runInAction, toJS} from 'mobx'
 import type {PhotoroomDBSchema} from '../utils/idb'
 import {loadFoldersFromDB, saveFoldersToDB} from '../utils/idb'
@@ -9,12 +10,14 @@ export type Folder = {
 }
 
 export class FoldersState {
+    rootState: RootState
     db: IDBPDatabase<PhotoroomDBSchema>
 
     folders: Folder[] = []
 
-    constructor(db: IDBPDatabase<PhotoroomDBSchema>) {
+    constructor(rootState: RootState, db: IDBPDatabase<PhotoroomDBSchema>) {
         makeAutoObservable(this)
+        this.rootState = rootState
         this.db = db
         this.init()
 
