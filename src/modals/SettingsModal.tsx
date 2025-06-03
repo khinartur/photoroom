@@ -13,6 +13,7 @@ export const SettingsModal = observer(({mountNode}: CommonModalProps) => {
         <Modal
             className="h-full max-h-[calc(100vh-128px)] w-full max-w-[1400px]"
             mountNode={mountNode}
+            showCloseButton
             onClose={() => modalsState.closeModal()}
         >
             <div className="flex flex-1 h-full">

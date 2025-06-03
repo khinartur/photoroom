@@ -76,4 +76,8 @@ export class DesignsState {
     addDesign(design: Design) {
         this.designs = [...this.designs, design]
     }
+
+    deleteDesign(id: string) {
+        this.designs = this.designs.filter(d => d.id !== id)
+    }
 }

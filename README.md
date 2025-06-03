@@ -8,6 +8,7 @@ React, TypeScript, MobX, TailwindCSS, Vite.js, UI Kit on RadixUI
 ### Features
 
 - Design creation with "Add Emoji" tool
+- Design deletion
 - Result image export
 - Folders creation
 - Dark mode

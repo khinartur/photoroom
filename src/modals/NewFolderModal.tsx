@@ -26,6 +26,7 @@ export const NewFolderModal = observer(({mountNode}: CommonModalProps) => {
             className="w-[480px] p-10"
             mountNode={mountNode}
             title="Create a folder"
+            showCloseButton
             onClose={() => modalsState.closeModal()}
         >
             <form onSubmit={onCreate}>

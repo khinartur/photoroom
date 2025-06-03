@@ -1,6 +1,9 @@
 import {tcn} from '../utils/tcn'
 
 type MenuItemProps = {
+    className?: string
+    iconClassName?: string
+    labelClassName?: string
     label: string
     icon?: React.ReactNode
     onClick?: () => void
@@ -8,6 +11,9 @@ type MenuItemProps = {
 }
 
 export const MenuItem = ({
+    className,
+    iconClassName,
+    labelClassName,
     label,
     icon,
     active = false,
@@ -21,6 +27,7 @@ export const MenuItem = ({
                     'bg-background-accent-subdued hover:bg-background-accent-subdued':
                         active,
                 },
+                className,
             )}
             onClick={onClick}
         >
@@ -32,15 +39,20 @@ export const MenuItem = ({
                             'text-content-accent dark:group-hover:text-content-accent':
                                 active,
                         },
+                        iconClassName,
                     )}
                 >
                     {icon}
                 </div>
             )}
             <span
-                className={tcn('text-content-primary text-[14px] font-medium', {
-                    'text-content-accent': active,
-                })}
+                className={tcn(
+                    'text-content-primary text-[14px] font-medium',
+                    {
+                        'text-content-accent': active,
+                    },
+                    labelClassName,
+                )}
             >
                 {label}
             </span>

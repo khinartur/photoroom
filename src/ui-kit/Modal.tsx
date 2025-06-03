@@ -5,6 +5,7 @@ import {tcn} from '../utils/tcn'
 type ModalProps = React.PropsWithChildren<{
     className?: string
     title?: string
+    showCloseButton?: boolean
     onClose: () => void
     mountNode: HTMLElement | null
 }>
@@ -12,6 +13,7 @@ type ModalProps = React.PropsWithChildren<{
 export const Modal = ({
     className,
     title,
+    showCloseButton = false,
     onClose,
     mountNode,
     children,
@@ -38,18 +40,20 @@ export const Modal = ({
                     <Dialog.Description className="h-full w-full">
                         {children}
                     </Dialog.Description>
-                    <Dialog.Close asChild onClick={onClose}>
-                        <div
-                            className={tcn(
-                                'absolute top-4 right-4 flex items-center justify-center rounded-full size-8 cursor-pointer',
-                                'bg-background-default text-content-inverted',
-                            )}
-                        >
-                            <div className="size-4 flex items-center justify-center">
-                                <CloseIcon />
+                    {showCloseButton && (
+                        <Dialog.Close asChild onClick={onClose}>
+                            <div
+                                className={tcn(
+                                    'absolute top-4 right-4 flex items-center justify-center rounded-full size-8 cursor-pointer',
+                                    'bg-background-default text-content-inverted',
+                                )}
+                            >
+                                <div className="size-4 flex items-center justify-center">
+                                    <CloseIcon />
+                                </div>
                             </div>
-                        </div>
-                    </Dialog.Close>
+                        </Dialog.Close>
+                    )}
                 </Dialog.Content>
             </Dialog.Portal>
         </Dialog.Root>
