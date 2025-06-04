@@ -9,9 +9,11 @@ React, TypeScript, MobX, TailwindCSS, Vite.js, UI Kit on RadixUI
 
 - Design creation with "Add Emoji" tool
 - Design deletion
+- Designs selection
 - Result image export
 - Folders creation
 - Folders deletion
+- Move designs to folder
 - Dark mode
 - Reusable UI kit
 - Offline work with app state saving to IndexDB

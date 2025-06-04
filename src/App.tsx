@@ -3,6 +3,7 @@ import {observer} from 'mobx-react-lite'
 import {useAppState} from './providers/root'
 import {Menu} from './Menu'
 import {Content} from './Content'
+import {SelectionBar} from './SelectionBar'
 
 export const App = observer(() => {
     const appState = useAppState()
@@ -18,6 +19,7 @@ export const App = observer(() => {
         <div className="flex h-full bg-background-primary">
             <Menu />
             <Content />
+            <SelectionBar />
         </div>
     )
 })

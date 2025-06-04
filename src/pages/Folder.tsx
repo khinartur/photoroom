@@ -1,16 +1,23 @@
 import {observer} from 'mobx-react-lite'
+import {tcn} from '../utils/tcn'
 import {ChevronRightIcon, DotsIcon, FolderIcon, PlusIcon} from '../icons'
 import {Button} from '../ui-kit/Button'
 import {PageLayout} from '../ui-kit/PageLayout'
-import {useAppState, useFoldersState, useModalsState} from '../providers/root'
+import {
+    useAppState,
+    useFoldersState,
+    useModalsState,
+    useSelectionState,
+} from '../providers/root'
 import {Dropdown} from '../ui-kit/Dropdown'
 import {DeleteMenuItem} from '../ui-kit/DeleteMenuItem'
-import {tcn} from '../utils/tcn'
+import {DesignPreviewCard} from '../DesignPreviewCard'
 
 export const FolderPage = observer(() => {
     const appState = useAppState()
     const modalsState = useModalsState()
     const foldersState = useFoldersState()
+    const selectionState = useSelectionState()
 
     const activeFolder = foldersState.activeFolder
 
@@ -62,24 +69,38 @@ export const FolderPage = observer(() => {
                 />
             }
         >
-            <div className="flex flex-1 items-center justify-center">
-                <div className="flex flex-col items-center gap-6">
-                    <div className="flex flex-col items-center gap-4">
-                        <div className="flex items-center justify-center size-10 text-content-tertiary">
-                            <FolderIcon />
+            {activeFolder.designsIds.length === 0 && (
+                <div className="flex flex-1 items-center justify-center">
+                    <div className="flex flex-col items-center gap-6">
+                        <div className="flex flex-col items-center gap-4">
+                            <div className="flex items-center justify-center size-10 text-content-tertiary">
+                                <FolderIcon />
+                            </div>
+                            <h1 className="text-xl font-semibold text-content-primary">
+                                Add designs to this folder
+                            </h1>
                         </div>
-                        <h1 className="text-xl font-semibold text-content-primary">
-                            Add designs to this folder
-                        </h1>
+                        <Button
+                            icon={<PlusIcon />}
+                            onClick={() => {
+                                selectionState.setSelectionFolderId(
+                                    activeFolder.id,
+                                )
+                                appState.goToDesignsPage()
+                            }}
+                        >
+                            Add designs
+                        </Button>
                     </div>
-                    <Button
-                        icon={<PlusIcon />}
-                        onClick={() => appState.goToDesignsPage()}
-                    >
-                        Add designs
-                    </Button>
                 </div>
-            </div>
+            )}
+            {activeFolder.designsIds.length > 0 && (
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(176px,1fr))] gap-4 pb-4">
+                    {activeFolder.designsIds.map(designId => (
+                        <DesignPreviewCard key={designId} designId={designId} />
+                    ))}
+                </div>
+            )}
         </PageLayout>
     )
 })

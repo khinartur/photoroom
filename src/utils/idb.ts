@@ -7,7 +7,7 @@ import type {SerializedDesign} from './serializers'
 import {deserializeDesign, serializeDesign} from './serializers'
 
 const DB_NAME = 'PhotoroomAppDB'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 export type PhotoroomDBSchema = {
     state: {
@@ -17,13 +17,35 @@ export type PhotoroomDBSchema = {
 }
 
 export const initDB = async () => {
-    return await openDB<PhotoroomDBSchema>(DB_NAME, DB_VERSION, {
-        upgrade(db) {
+    let needFoldersMigration = false
+
+    const db = await openDB<PhotoroomDBSchema>(DB_NAME, DB_VERSION, {
+        upgrade(db, oldVersion, newVersion) {
             if (!db.objectStoreNames.contains('state')) {
                 db.createObjectStore('state')
             }
+
+            needFoldersMigration = oldVersion === 1 && newVersion === 2
         },
     })
+
+    if (needFoldersMigration) {
+        const tx = db.transaction('state', 'readwrite')
+        const store = tx.objectStore('state')
+        const folders = await store.get('folders')
+
+        if (folders) {
+            const updatedFolders = (folders as Folder[]).map(folder => ({
+                ...folder,
+                designsIds: [],
+            }))
+            await store.put(updatedFolders, 'folders')
+        }
+
+        await tx.done
+    }
+
+    return db
 }
 
 export const saveDesignsToDB = async (

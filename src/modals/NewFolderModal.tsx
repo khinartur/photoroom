@@ -17,6 +17,7 @@ export const NewFolderModal = observer(({mountNode}: CommonModalProps) => {
         foldersState.addFolder({
             id: crypto.randomUUID(),
             name: folderName,
+            designsIds: [],
         })
         modalsState.closeModal()
     }

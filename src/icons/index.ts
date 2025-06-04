@@ -1,4 +1,5 @@
 export {default as BrushIcon} from './brush.svg'
+export {default as CheckIcon} from './check.svg'
 export {default as ChevronRightIcon} from './chevron-right.svg'
 export {default as CloseIcon} from './close.svg'
 export {default as DotsIcon} from './dots.svg'

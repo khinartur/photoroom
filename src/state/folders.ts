@@ -1,5 +1,6 @@
 import type {IDBPDatabase} from 'idb'
 import type {RootState} from './root'
+import type {Design} from './designs'
 import {makeAutoObservable, reaction, runInAction, toJS} from 'mobx'
 import type {PhotoroomDBSchema} from '../utils/idb'
 import {loadFoldersFromDB, saveFoldersToDB} from '../utils/idb'
@@ -7,6 +8,7 @@ import {loadFoldersFromDB, saveFoldersToDB} from '../utils/idb'
 export type Folder = {
     id: string
     name: string
+    designsIds: Design['id'][]
 }
 
 export class FoldersState {
@@ -22,9 +24,12 @@ export class FoldersState {
         this.init()
 
         reaction(
-            () => this.folders,
+            () => ({
+                folders: this.folders,
+                designIds: this.folders.map(folder => folder.designsIds),
+            }),
             newVal => {
-                const plainFolders = toJS(newVal)
+                const plainFolders = toJS(newVal.folders)
                 saveFoldersToDB(this.db, plainFolders)
             },
         )
@@ -55,5 +60,14 @@ export class FoldersState {
             return null
         }
         return this.folders.find(d => d.id === id)
+    }
+
+    addSelectedDesignsToFolder() {
+        const folder = this.rootState.selectionState.selectionFolder
+        if (!folder) {
+            return
+        }
+        folder.designsIds = this.rootState.selectionState.selection
+        this.rootState.appState.goToFolderPage(folder.id)
     }
 }

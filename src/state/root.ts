@@ -5,6 +5,7 @@ import {FoldersState} from './folders'
 import {DesignsState} from './designs'
 import {EditorState} from './editor'
 import {ModalsState} from './modals'
+import {SelectionState} from './selection'
 
 export class RootState {
     appState: AppState
@@ -12,6 +13,7 @@ export class RootState {
     designsState: DesignsState
     editorState: EditorState
     modalsState: ModalsState
+    selectionState: SelectionState
 
     constructor(db: IDBPDatabase<PhotoroomDBSchema>) {
         this.appState = new AppState(this, db)
@@ -19,5 +21,6 @@ export class RootState {
         this.designsState = new DesignsState(this, db)
         this.editorState = new EditorState(this, db)
         this.modalsState = new ModalsState(this)
+        this.selectionState = new SelectionState(this)
     }
 }

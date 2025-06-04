@@ -2,7 +2,6 @@ import {observer} from 'mobx-react-lite'
 import {BrushIcon, NewFolderIcon, PlusIcon} from '../icons'
 import {Button} from '../ui-kit/Button'
 import {Category} from '../ui-kit/Category'
-import {DesignPreviewCard} from '../ui-kit/DesignPreviewCard'
 import {Folder} from '../ui-kit/Folder'
 import {PageLayout} from '../ui-kit/PageLayout'
 import {
@@ -11,6 +10,7 @@ import {
     useFoldersState,
     useModalsState,
 } from '../providers/root'
+import {DesignPreviewCard} from '../DesignPreviewCard'
 
 export const DesignsPage = observer(() => {
     const appState = useAppState()
@@ -93,7 +93,7 @@ export const DesignsPage = observer(() => {
                                 {designsState.designs.map(design => (
                                     <DesignPreviewCard
                                         key={design.id}
-                                        design={design}
+                                        designId={design.id}
                                     />
                                 ))}
                             </div>
