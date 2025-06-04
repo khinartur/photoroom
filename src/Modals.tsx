@@ -3,6 +3,7 @@ import {useModalsState} from './providers/root'
 import {NewFolderModal} from './modals/NewFolderModal'
 import {SettingsModal} from './modals/SettingsModal'
 import {DeleteDesignModal} from './modals/DeleteDesignModal'
+import {DeleteFolderModal} from './modals/DeleteFolderModal'
 
 export const Modals = observer(() => {
     const modalsState = useModalsState()
@@ -25,6 +26,15 @@ export const Modals = observer(() => {
             <DeleteDesignModal
                 mountNode={mountNode}
                 designId={modalsState.openModal.designId}
+            />
+        )
+    }
+
+    if (modalsState.openModal.type === 'DELETE_FOLDER') {
+        return (
+            <DeleteFolderModal
+                mountNode={mountNode}
+                folderId={modalsState.openModal.folderId}
             />
         )
     }

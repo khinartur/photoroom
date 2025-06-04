@@ -11,6 +11,7 @@ React, TypeScript, MobX, TailwindCSS, Vite.js, UI Kit on RadixUI
 - Design deletion
 - Result image export
 - Folders creation
+- Folders deletion
 - Dark mode
 - Reusable UI kit
 - Offline work with app state saving to IndexDB

@@ -4,8 +4,13 @@ import type {RootState} from './root'
 type NewFolderModal = {type: 'NEW_FOLDER'}
 type SettingsModal = {type: 'SETTINGS'}
 type DeleteDesignModal = {type: 'DELETE_DESIGN'; designId: string}
+type DeleteFolderModal = {type: 'DELETE_FOLDER'; folderId: string}
 
-type ModalType = NewFolderModal | SettingsModal | DeleteDesignModal
+type ModalType =
+    | NewFolderModal
+    | SettingsModal
+    | DeleteDesignModal
+    | DeleteFolderModal
 
 export class ModalsState {
     rootState: RootState
@@ -28,6 +33,13 @@ export class ModalsState {
         this.openModal = {
             type: 'DELETE_DESIGN',
             designId,
+        }
+    }
+
+    openDeleteFolderModal(folderId: string) {
+        this.openModal = {
+            type: 'DELETE_FOLDER',
+            folderId,
         }
     }
 

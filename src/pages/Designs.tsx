@@ -18,6 +18,10 @@ export const DesignsPage = observer(() => {
     const designsState = useDesignsState()
     const foldersState = useFoldersState()
 
+    const onFolderOpen = (folderId: string) => {
+        appState.goToFolderPage(folderId)
+    }
+
     return (
         <PageLayout
             title="Designs"
@@ -71,7 +75,11 @@ export const DesignsPage = observer(() => {
                         content={
                             <div className="grid grid-cols-[repeat(auto-fill,minmax(268px,1fr))] gap-2">
                                 {foldersState.folders.map(folder => (
-                                    <Folder key={folder.id} folder={folder} />
+                                    <Folder
+                                        key={folder.id}
+                                        folder={folder}
+                                        onClick={onFolderOpen}
+                                    />
                                 ))}
                             </div>
                         }

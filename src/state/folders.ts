@@ -40,4 +40,20 @@ export class FoldersState {
     addFolder(folder: Folder) {
         this.folders = [...this.folders, folder]
     }
+
+    deleteFolder(id: string) {
+        this.folders = this.folders.filter(f => f.id !== id)
+        this.rootState.appState.goToDesignsPage()
+    }
+
+    get activeFolder() {
+        const id =
+            this.rootState.appState.page.type === 'FOLDER'
+                ? this.rootState.appState.page.folderId
+                : null
+        if (!id) {
+            return null
+        }
+        return this.folders.find(d => d.id === id)
+    }
 }

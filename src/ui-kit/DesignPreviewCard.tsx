@@ -1,11 +1,11 @@
 import {observer} from 'mobx-react-lite'
-import {DotsIcon, TrashIcon} from '../icons'
+import {DotsIcon} from '../icons'
 import {tcn} from '../utils/tcn'
 import type {Design} from '../state/designs'
 import {useAppState, useModalsState} from '../providers/root'
 import {Dropdown} from './Dropdown'
-import {MenuItem} from './MenuItem'
 import {useState} from 'react'
+import {DeleteMenuItem} from './DeleteMenuItem'
 
 type DesignPreviewCardProps = {
     design: Design
@@ -63,12 +63,7 @@ export const DesignPreviewCard = observer(
                                 )}
                                 onClick={e => e.stopPropagation()}
                             >
-                                <MenuItem
-                                    className="rounded-[6px]"
-                                    iconClassName="text-content-negative dark:group-hover:text-content-negative"
-                                    labelClassName="text-content-negative"
-                                    label="Delete"
-                                    icon={<TrashIcon />}
+                                <DeleteMenuItem
                                     onClick={() =>
                                         modalsState.openDeleteDesignModal(
                                             design.id,
