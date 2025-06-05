@@ -4,8 +4,9 @@ type MenuItemProps = {
     className?: string
     iconClassName?: string
     labelClassName?: string
-    label: string
+    label: string | React.ReactNode
     icon?: React.ReactNode
+    right?: React.ReactNode
     onClick?: () => void
     active?: boolean
 }
@@ -16,13 +17,14 @@ export const MenuItem = ({
     labelClassName,
     label,
     icon,
+    right,
     active = false,
     onClick,
 }: MenuItemProps) => {
     return (
         <div
             className={tcn(
-                'group flex items-center justify-start gap-3 rounded-[10px] p-2.5 cursor-pointer hover:bg-background-subdued-hover',
+                'group flex items-center justify-between rounded-[10px] p-2.5 cursor-pointer hover:bg-background-subdued-hover',
                 {
                     'bg-background-accent-subdued hover:bg-background-accent-subdued':
                         active,
@@ -31,31 +33,38 @@ export const MenuItem = ({
             )}
             onClick={onClick}
         >
-            {icon && (
-                <div
-                    className={tcn(
-                        'flex items-center justify-center size-5 text-content-secondary dark:group-hover:text-content-primary',
-                        {
-                            'text-content-accent dark:group-hover:text-content-accent':
-                                active,
-                        },
-                        iconClassName,
-                    )}
-                >
-                    {icon}
-                </div>
-            )}
-            <span
-                className={tcn(
-                    'text-content-primary text-[14px] font-medium',
-                    {
-                        'text-content-accent': active,
-                    },
-                    labelClassName,
+            <div className="flex flex-1 items-center justify-start gap-3">
+                {icon && (
+                    <div
+                        className={tcn(
+                            'flex items-center justify-center size-5 text-content-secondary dark:group-hover:text-content-primary',
+                            {
+                                'text-content-accent dark:group-hover:text-content-accent':
+                                    active,
+                            },
+                            iconClassName,
+                        )}
+                    >
+                        {icon}
+                    </div>
                 )}
-            >
-                {label}
-            </span>
+                {typeof label === 'string' ? (
+                    <span
+                        className={tcn(
+                            'text-content-primary text-[14px] font-medium',
+                            {
+                                'text-content-accent': active,
+                            },
+                            labelClassName,
+                        )}
+                    >
+                        {label}
+                    </span>
+                ) : (
+                    label
+                )}
+            </div>
+            {right}
         </div>
     )
 }

@@ -1,58 +1,74 @@
 import {observer} from 'mobx-react-lite'
 import {useState} from 'react'
-import {useFoldersState, useModalsState} from '../providers/root'
+import {useFoldersState, useModalsState, useToastState} from '../providers/root'
 import type {CommonModalProps} from '.'
 import {Modal} from '../ui-kit/Modal'
 import {Button} from '../ui-kit/Button'
 import {Input} from '../ui-kit/Input'
+import {DesignsAddedToFolderToast} from '../toasts'
 
-export const NewFolderModal = observer(({mountNode}: CommonModalProps) => {
-    const modalsState = useModalsState()
-    const foldersState = useFoldersState()
-    const [folderName, setFolderName] = useState('')
+type NewFolderModalProps = CommonModalProps & {
+    addSelectionOnSuccess?: boolean
+}
 
-    const onCreate = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+export const NewFolderModal = observer(
+    ({mountNode, addSelectionOnSuccess = false}: NewFolderModalProps) => {
+        const modalsState = useModalsState()
+        const foldersState = useFoldersState()
+        const toastState = useToastState()
+        const [folderName, setFolderName] = useState('')
 
-        foldersState.addFolder({
-            id: crypto.randomUUID(),
-            name: folderName,
-            designsIds: [],
-        })
-        modalsState.closeModal()
-    }
+        const onCreate = (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault()
 
-    return (
-        <Modal
-            className="w-[480px] p-10"
-            mountNode={mountNode}
-            title="Create a folder"
-            showCloseButton
-            onClose={() => modalsState.closeModal()}
-        >
-            <form onSubmit={onCreate}>
-                <div className="flex flex-col gap-8">
-                    <Input
-                        label="Folder name"
-                        value={folderName}
-                        onChange={e => setFolderName(e.target.value)}
-                    />
-                    <div className="flex justify-end gap-3">
-                        <Button
-                            variant="secondary"
-                            onClick={() => modalsState.closeModal()}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={folderName.length === 0}
-                        >
-                            Create
-                        </Button>
+            const newFolderId = crypto.randomUUID()
+
+            foldersState.addFolder({
+                id: newFolderId,
+                name: folderName,
+                designsIds: [],
+            })
+
+            if (addSelectionOnSuccess) {
+                foldersState.addSelectedDesignsToFolder(newFolderId)
+                toastState.setActiveToast(DesignsAddedToFolderToast)
+            }
+
+            modalsState.closeModal()
+        }
+
+        return (
+            <Modal
+                className="w-[480px] p-10"
+                mountNode={mountNode}
+                title="Create a folder"
+                showCloseButton
+                onClose={() => modalsState.closeModal()}
+            >
+                <form onSubmit={onCreate}>
+                    <div className="flex flex-col gap-8">
+                        <Input
+                            label="Folder name"
+                            value={folderName}
+                            onChange={e => setFolderName(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                variant="secondary"
+                                onClick={() => modalsState.closeModal()}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={folderName.length === 0}
+                            >
+                                Create
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </Modal>
-    )
-})
+                </form>
+            </Modal>
+        )
+    },
+)

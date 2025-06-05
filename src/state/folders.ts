@@ -62,12 +62,27 @@ export class FoldersState {
         return this.folders.find(d => d.id === id)
     }
 
-    addSelectedDesignsToFolder() {
-        const folder = this.rootState.selectionState.selectionFolder
+    addSelectedDesignsToFolder(folderId?: Folder['id']) {
+        const folder = folderId
+            ? this.folders.find(f => f.id === folderId)
+            : this.rootState.selectionState.selectionFolder
         if (!folder) {
             return
         }
-        folder.designsIds = this.rootState.selectionState.selection
+        folder.designsIds = Array.from(
+            new Set([
+                ...folder.designsIds,
+                ...this.rootState.selectionState.selection,
+            ]),
+        )
         this.rootState.appState.goToFolderPage(folder.id)
+    }
+
+    removeDesignFromFolder(folderId: Folder['id'], designId: Design['id']) {
+        const folder = this.folders.find(f => f.id === folderId)
+        if (!folder) {
+            return
+        }
+        folder.designsIds = folder.designsIds.filter(id => id !== designId)
     }
 }

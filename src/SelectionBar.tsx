@@ -1,12 +1,20 @@
 import {observer} from 'mobx-react-lite'
-import {useFoldersState, useSelectionState} from './providers/root'
+import {
+    useFoldersState,
+    useModalsState,
+    useSelectionState,
+    useToastState,
+} from './providers/root'
 import {Button} from './ui-kit/Button'
-import {CloseIcon, FolderIcon} from './icons'
+import {CloseIcon, FolderIcon, TrashIcon} from './icons'
 import {tcn} from './utils/tcn'
+import {DesignsAddedToFolderToast} from './toasts'
 
 export const SelectionBar = observer(() => {
+    const modalsState = useModalsState()
     const selectionState = useSelectionState()
     const foldersState = useFoldersState()
+    const toastState = useToastState()
 
     if (selectionState.selectionFolderId === null) {
         return null
@@ -37,17 +45,46 @@ export const SelectionBar = observer(() => {
                             : 'None selected'}
                     </span>
                 </div>
-                {selectionState.selection.length > 0 &&
-                    selectionState.selectionFolder !== null && (
+                <div className="flex items-center">
+                    {selectionState.selection.length > 0 &&
+                        foldersState.activeFolder === null &&
+                        selectionState.selectionFolder !== null && (
+                            <Button
+                                icon={<FolderIcon />}
+                                onClick={() => {
+                                    foldersState.addSelectedDesignsToFolder()
+                                    toastState.setActiveToast(
+                                        DesignsAddedToFolderToast,
+                                    )
+                                }}
+                            >
+                                {`Add to "${selectionState.selectionFolder.name}"`}
+                            </Button>
+                        )}
+                    {selectionState.selection.length > 0 &&
+                        selectionState.selectionFolderId === 'HOME' && (
+                            <Button
+                                icon={<FolderIcon />}
+                                onClick={() => {
+                                    modalsState.openAddToFolderModal()
+                                }}
+                            >
+                                Add to folder
+                            </Button>
+                        )}
+                    {selectionState.selection.length > 0 && (
                         <Button
-                            icon={<FolderIcon />}
-                            onClick={() =>
-                                foldersState.addSelectedDesignsToFolder()
-                            }
+                            icon={<TrashIcon />}
+                            onClick={() => {
+                                modalsState.openDeleteDesignModal(
+                                    selectionState.selection,
+                                )
+                            }}
                         >
-                            {`Add to "${selectionState.selectionFolder.name}"`}
+                            Delete
                         </Button>
                     )}
+                </div>
             </div>
         </div>
     )

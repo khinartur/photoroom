@@ -77,6 +77,13 @@ function createSelectionStateHook(getContext: () => Context<RootState>) {
     }
 }
 
+function createToastStateHook(getContext: () => Context<RootState>) {
+    return () => {
+        const rootState = useContext(getContext())
+        return rootState.toastState
+    }
+}
+
 export const {RootStateProvider, getRootStateContext} =
     createRootStateProvider()
 
@@ -87,3 +94,4 @@ export const useEditorState = createEditorStateHook(getRootStateContext)
 export const useDesignsState = createDesignsStateHook(getRootStateContext)
 export const useFoldersState = createFoldersStateHook(getRootStateContext)
 export const useSelectionState = createSelectionStateHook(getRootStateContext)
+export const useToastState = createToastStateHook(getRootStateContext)

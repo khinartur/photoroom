@@ -1,14 +1,18 @@
 import {makeAutoObservable} from 'mobx'
 import type {RootState} from './root'
+import type {Design} from './designs'
+import type {Folder} from './folders'
 
-type NewFolderModal = {type: 'NEW_FOLDER'}
+type NewFolderModal = {type: 'NEW_FOLDER'; addSelectionOnSuccess?: boolean}
 type SettingsModal = {type: 'SETTINGS'}
-type DeleteDesignModal = {type: 'DELETE_DESIGN'; designId: string}
-type DeleteFolderModal = {type: 'DELETE_FOLDER'; folderId: string}
+type AddToFolderModal = {type: 'ADD_TO_FOLDER'}
+type DeleteDesignModal = {type: 'DELETE_DESIGN'; designsIds: Design['id'][]}
+type DeleteFolderModal = {type: 'DELETE_FOLDER'; folderId: Folder['id']}
 
 type ModalType =
     | NewFolderModal
     | SettingsModal
+    | AddToFolderModal
     | DeleteDesignModal
     | DeleteFolderModal
 
@@ -21,18 +25,22 @@ export class ModalsState {
         this.rootState = rootState
     }
 
-    openNewFolderModal() {
-        this.openModal = {type: 'NEW_FOLDER'}
+    openNewFolderModal(addSelectionOnSuccess?: boolean) {
+        this.openModal = {type: 'NEW_FOLDER', addSelectionOnSuccess}
     }
 
     openSettingsModal() {
         this.openModal = {type: 'SETTINGS'}
     }
 
-    openDeleteDesignModal(designId: string) {
+    openAddToFolderModal() {
+        this.openModal = {type: 'ADD_TO_FOLDER'}
+    }
+
+    openDeleteDesignModal(designsIds: Design['id'][]) {
         this.openModal = {
             type: 'DELETE_DESIGN',
-            designId,
+            designsIds,
         }
     }
 

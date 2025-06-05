@@ -1,9 +1,10 @@
 import {observer} from 'mobx-react-lite'
-import {DotsIcon} from './icons'
+import {DotsIcon, SignLeftIcon} from './icons'
 import {tcn} from './utils/tcn'
 import {
     useAppState,
     useDesignsState,
+    useFoldersState,
     useModalsState,
     useSelectionState,
 } from './providers/root'
@@ -12,6 +13,7 @@ import {useState} from 'react'
 import {DeleteMenuItem} from './ui-kit/DeleteMenuItem'
 import {Checkbox} from './ui-kit/Checkbox'
 import type {Design} from './state/designs'
+import {MenuItem} from './ui-kit/MenuItem'
 
 type DesignPreviewCardProps = {
     designId: Design['id']
@@ -20,6 +22,7 @@ type DesignPreviewCardProps = {
 export const DesignPreviewCard = observer(
     ({designId}: DesignPreviewCardProps) => {
         const appState = useAppState()
+        const foldersState = useFoldersState()
         const modalsState = useModalsState()
         const designsState = useDesignsState()
         const selectionState = useSelectionState()
@@ -31,6 +34,7 @@ export const DesignPreviewCard = observer(
             return null
         }
 
+        const activeFolder = foldersState.activeFolder
         const selectionMode = selectionState.selectionFolderId !== null
         const isSelected = selectionState.selection.includes(designId)
 
@@ -105,11 +109,23 @@ export const DesignPreviewCard = observer(
                                 )}
                                 onClick={e => e.stopPropagation()}
                             >
+                                {activeFolder && (
+                                    <MenuItem
+                                        label="Remove from folder"
+                                        icon={<SignLeftIcon />}
+                                        onClick={() => {
+                                            foldersState.removeDesignFromFolder(
+                                                activeFolder.id,
+                                                design.id,
+                                            )
+                                        }}
+                                    />
+                                )}
                                 <DeleteMenuItem
                                     onClick={() =>
-                                        modalsState.openDeleteDesignModal(
+                                        modalsState.openDeleteDesignModal([
                                             design.id,
-                                        )
+                                        ])
                                     }
                                 />
                             </div>
