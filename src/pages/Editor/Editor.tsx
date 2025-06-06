@@ -4,12 +4,15 @@ import {
     useAppState,
     useDesignsState,
     useEditorState,
+    useModalsState,
 } from '../../providers/root'
 import type {Layer} from '../../state/designs'
-import {HomeIcon, ImagesIcon} from '../../icons'
+import {DotsIcon, HomeIcon, ImagesIcon} from '../../icons'
 import {Button} from '../../ui-kit/Button'
 import {tcn} from '../../utils/tcn'
 import {Tool} from '../../ui-kit/Tool'
+import {Dropdown} from '../../ui-kit/Dropdown'
+import {DeleteMenuItem} from '../../ui-kit/DeleteMenuItem'
 import {ExportButton} from './ExportButton'
 import {Sidebar} from './Sidebar'
 
@@ -17,9 +20,16 @@ export const EditorPage = observer(() => {
     const appState = useAppState()
     const designsState = useDesignsState()
     const editorState = useEditorState()
+    const modalsState = useModalsState()
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     const design = designsState.activeDesign
+
+    useEffect(() => {
+        if (!design) {
+            appState.goToDesignsPage()
+        }
+    }, [design, appState])
 
     const redrawCanvas = useCallback(
         (canvas: HTMLCanvasElement, layers: Layer[]) => {
@@ -102,7 +112,32 @@ export const EditorPage = observer(() => {
                 >
                     Add Emoji
                 </Tool>
-                <ExportButton canvas={canvasRef.current} />
+                <div className="flex items-center gap-2">
+                    <Dropdown
+                        align="end"
+                        trigger={<Button variant="ghost" icon={<DotsIcon />} />}
+                        content={
+                            <div
+                                className={tcn(
+                                    'w-[240px] bg-background-primary outline-none p-1',
+                                    'border border-misc-border rounded-[10px]',
+                                )}
+                                onClick={e => e.stopPropagation()}
+                            >
+                                <DeleteMenuItem
+                                    onClick={() => {
+                                        if (design) {
+                                            modalsState.openDeleteDesignModal([
+                                                design.id,
+                                            ])
+                                        }
+                                    }}
+                                />
+                            </div>
+                        }
+                    />
+                    <ExportButton canvas={canvasRef.current} />
+                </div>
             </div>
             <div className="flex h-full w-full overflow-hidden">
                 <div
