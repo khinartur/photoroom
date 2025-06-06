@@ -21,7 +21,17 @@ export const Sidebar = observer(() => {
         return (
             <div className="flex flex-col gap-2 w-full p-4">
                 {design.layers.map(layer => (
-                    <Layer key={layer.id} layer={layer} />
+                    <Layer
+                        key={layer.id}
+                        layer={layer}
+                        onVisibilityChange={hidden => {
+                            designsState.updateLayerVisibility(
+                                design.id,
+                                layer.id,
+                                hidden,
+                            )
+                        }}
+                    />
                 ))}
             </div>
         )

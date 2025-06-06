@@ -41,6 +41,10 @@ export const EditorPage = observer(() => {
             ctx.drawImage(design.image, 0, 0)
 
             for (const layer of layers) {
+                if (layer.hidden) {
+                    continue
+                }
+
                 if (layer.type === 'EMOJI') {
                     const fontSize = design.image.width / 10
                     ctx.font = `${fontSize}px serif`

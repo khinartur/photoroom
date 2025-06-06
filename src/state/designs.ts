@@ -7,15 +7,18 @@ import {
     type PhotoroomDBSchema,
 } from '../utils/idb'
 
-export type ImageLayer = {
+type CommonLayerProps = {
     id: string
+    hidden: boolean
+}
+
+export type ImageLayer = CommonLayerProps & {
     type: 'IMAGE'
     name: 'Photo'
     image: HTMLImageElement
 }
 
-export type EmojiLayer = {
-    id: string
+export type EmojiLayer = CommonLayerProps & {
     type: 'EMOJI'
     name: 'Emoji'
     emoji: string
@@ -79,5 +82,14 @@ export class DesignsState {
 
     deleteDesigns(ids: Design['id'][]) {
         this.designs = this.designs.filter(d => !ids.includes(d.id))
+    }
+
+    updateLayerVisibility(designId: string, layerId: string, hidden: boolean) {
+        const design = this.designs.find(d => d.id === designId)
+        if (!design) return
+
+        design.layers = design.layers.map(layer =>
+            layer.id === layerId ? {...layer, hidden} : layer,
+        )
     }
 }

@@ -27,6 +27,7 @@ export class EditorState {
             ...activeDesign.layers,
             {
                 id: crypto.randomUUID(),
+                hidden: false,
                 type: 'EMOJI',
                 name: 'Emoji',
                 emoji: this.selectedEmoji,
