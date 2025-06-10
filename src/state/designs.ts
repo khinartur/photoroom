@@ -84,6 +84,24 @@ export class DesignsState {
         this.designs = this.designs.filter(d => !ids.includes(d.id))
     }
 
+    addLayer(layer: Layer) {
+        if (!this.activeDesign) {
+            return
+        }
+        this.activeDesign.layers = [...this.activeDesign.layers, layer]
+    }
+
+    removeLastLayer() {
+        if (!this.activeDesign) {
+            return
+        }
+        const removed = {
+            ...this.activeDesign.layers[this.activeDesign.layers.length - 1],
+        }
+        this.activeDesign.layers = [...this.activeDesign.layers.slice(0, -1)]
+        return removed
+    }
+
     updateLayerVisibility(designId: string, layerId: string, hidden: boolean) {
         const design = this.designs.find(d => d.id === designId)
         if (!design) return

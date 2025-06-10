@@ -4,10 +4,11 @@ import {
     useAppState,
     useDesignsState,
     useEditorState,
+    useHistoryState,
     useModalsState,
 } from '../../providers/root'
 import type {Layer} from '../../state/designs'
-import {DotsIcon, HomeIcon, ImagesIcon} from '../../icons'
+import {DotsIcon, HomeIcon, ImagesIcon, ReverseIcon} from '../../icons'
 import {Button} from '../../ui-kit/Button'
 import {tcn} from '../../utils/tcn'
 import {Tool} from '../../ui-kit/Tool'
@@ -21,6 +22,7 @@ export const EditorPage = observer(() => {
     const designsState = useDesignsState()
     const editorState = useEditorState()
     const modalsState = useModalsState()
+    const historyState = useHistoryState()
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     const design = designsState.activeDesign
@@ -91,7 +93,7 @@ export const EditorPage = observer(() => {
         const x = (e.clientX - rect.left) * scaleX
         const y = (e.clientY - rect.top) * scaleY
 
-        editorState.selectedTool(x, y)
+        editorState.applyTool(x, y)
     }
 
     return (
@@ -102,14 +104,31 @@ export const EditorPage = observer(() => {
                     'bg-surface-high shadow-[0_1px_0_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.1)]',
                 )}
             >
-                <Button
-                    variant="secondary"
-                    icon={<HomeIcon />}
-                    onClick={() => {
-                        editorState.resetTool()
-                        appState.goToDesignsPage()
-                    }}
-                />
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="secondary"
+                        icon={<HomeIcon />}
+                        onClick={() => {
+                            editorState.resetTool()
+                            appState.goToDesignsPage()
+                        }}
+                    />
+                    <div className="flex items-center gap-0.5">
+                        <Button
+                            variant="ghost"
+                            disabled={!historyState.canUndo}
+                            icon={<ReverseIcon />}
+                            onClick={() => historyState.undo()}
+                        />
+                        <Button
+                            variant="ghost"
+                            disabled={!historyState.canRedo}
+                            icon={<ReverseIcon />}
+                            iconClassName="scale-x-[-1]"
+                            onClick={() => historyState.redo()}
+                        />
+                    </div>
+                </div>
                 <Tool
                     icon={<ImagesIcon />}
                     onClick={() => editorState.selectEmojiTool()}

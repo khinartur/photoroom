@@ -18,23 +18,23 @@ export class EditorState {
         this.db = db
     }
 
+    applyTool(clickX: number, clickY: number) {
+        this.selectedTool?.(clickX, clickY)
+    }
+
     addEmojiTool(clickX: number, clickY: number) {
-        const activeDesign = this.rootState.designsState.activeDesign
-        if (!activeDesign || !this.selectedEmoji) {
+        if (!this.selectedEmoji) {
             return
         }
-        activeDesign.layers = [
-            ...activeDesign.layers,
-            {
-                id: crypto.randomUUID(),
-                hidden: false,
-                type: 'EMOJI',
-                name: 'Emoji',
-                emoji: this.selectedEmoji,
-                x: clickX,
-                y: clickY,
-            },
-        ]
+        this.rootState.designsState.addLayer({
+            id: crypto.randomUUID(),
+            hidden: false,
+            type: 'EMOJI',
+            name: 'Emoji',
+            emoji: this.selectedEmoji,
+            x: clickX,
+            y: clickY,
+        })
     }
 
     selectEmojiTool() {

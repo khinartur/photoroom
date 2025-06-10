@@ -2,17 +2,21 @@ import {tcn} from '../utils/tcn'
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     className?: string
+    iconClassName?: string
     variant?: 'primary' | 'secondary' | 'ghost' | 'accent' | 'negative'
     onClick?: () => void
     icon?: React.ReactNode
+    disabled?: boolean
 }
 
 export const Button = ({
     children,
     onClick,
     className,
+    iconClassName,
     variant = 'primary',
     icon,
+    disabled,
     ...props
 }: ButtonProps) => {
     return (
@@ -33,14 +37,21 @@ export const Button = ({
                         variant === 'accent',
                     'bg-negative-alpha-1 hover:bg-negative-alpha-2 active:bg-negative-alpha-3 text-content-negative':
                         variant === 'negative',
+                    'opacity-50 cursor-not-allowed hover:bg-transparent active:bg-transparent':
+                        disabled,
                     'w-10 px-0': !children,
                 },
             )}
-            onClick={onClick}
+            onClick={disabled ? undefined : onClick}
             {...props}
         >
             {icon && (
-                <div className="flex items-center justify-center size-5">
+                <div
+                    className={tcn(
+                        'flex items-center justify-center size-5',
+                        iconClassName,
+                    )}
+                >
                     {icon}
                 </div>
             )}

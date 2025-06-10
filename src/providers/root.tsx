@@ -84,6 +84,13 @@ function createToastStateHook(getContext: () => Context<RootState>) {
     }
 }
 
+function createHistoryStateHook(getContext: () => Context<RootState>) {
+    return () => {
+        const rootState = useContext(getContext())
+        return rootState.historyState
+    }
+}
+
 export const {RootStateProvider, getRootStateContext} =
     createRootStateProvider()
 
@@ -95,3 +102,4 @@ export const useDesignsState = createDesignsStateHook(getRootStateContext)
 export const useFoldersState = createFoldersStateHook(getRootStateContext)
 export const useSelectionState = createSelectionStateHook(getRootStateContext)
 export const useToastState = createToastStateHook(getRootStateContext)
+export const useHistoryState = createHistoryStateHook(getRootStateContext)
