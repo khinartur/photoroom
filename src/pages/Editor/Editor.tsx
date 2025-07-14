@@ -34,8 +34,9 @@ export const EditorPage = observer(() => {
     const editorState = useEditorState()
     const modalsState = useModalsState()
     const historyState = useHistoryState()
-    const canvasRef = useRef<HTMLCanvasElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const canvasWrapperRef = useRef<HTMLDivElement>(null)
     const [canvasDisplayParams, setCanvasDisplayParams] =
         useState<CanvasDisplayParams>({
             width: 0,
@@ -64,11 +65,11 @@ export const EditorPage = observer(() => {
     }, [design, appState])
 
     const calculateCanvasDisplayParams = useCallback(() => {
-        if (!design?.image || !containerRef.current) {
+        if (!design?.image || !canvasWrapperRef.current) {
             return
         }
 
-        const containerRect = containerRef.current.getBoundingClientRect()
+        const containerRect = canvasWrapperRef.current.getBoundingClientRect()
 
         const padding = EDITOR_PADDING * 2
         const maxWidth = containerRect.width - padding
@@ -183,7 +184,7 @@ export const EditorPage = observer(() => {
     }
 
     return (
-        <div className="flex flex-col h-full max-h-full w-full">
+        <div ref={containerRef} className="flex flex-1 flex-col">
             <div
                 className={tcn(
                     'min-h-16 w-full flex items-center justify-between px-4',
@@ -249,10 +250,10 @@ export const EditorPage = observer(() => {
                     <ExportButton canvas={canvasRef.current} />
                 </div>
             </div>
-            <div className="flex flex-1">
+            <div className="flex flex-1 overflow-hidden">
                 <div
-                    ref={containerRef}
-                    className="relative flex justify-center items-center flex-1 h-full min-w-0 bg-surface-low overflow-hidden"
+                    ref={canvasWrapperRef}
+                    className="relative flex justify-center items-center flex-1 bg-surface-low"
                     style={{
                         padding: `${EDITOR_PADDING}px`,
                     }}
@@ -266,8 +267,6 @@ export const EditorPage = observer(() => {
                         style={{
                             width: canvasDisplayParams.width,
                             height: canvasDisplayParams.height,
-                            maxWidth: '100%',
-                            maxHeight: '100%',
                         }}
                         onClick={onCanvasClick}
                     />
