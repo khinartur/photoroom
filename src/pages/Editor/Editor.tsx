@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {observer} from 'mobx-react-lite'
 import {
     useAppState,
@@ -17,6 +17,8 @@ import {DeleteMenuItem} from '../../ui-kit/DeleteMenuItem'
 import {ExportButton} from './ExportButton'
 import {Sidebar} from './Sidebar'
 
+const EDITOR_PADDING = 40
+
 export const EditorPage = observer(() => {
     const appState = useAppState()
     const designsState = useDesignsState()
@@ -24,6 +26,11 @@ export const EditorPage = observer(() => {
     const modalsState = useModalsState()
     const historyState = useHistoryState()
     const canvasRef = useRef<HTMLCanvasElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [canvasDisplaySize, setCanvasDisplaySize] = useState({
+        width: 0,
+        height: 0,
+    })
 
     const design = designsState.activeDesign
 
@@ -32,6 +39,44 @@ export const EditorPage = observer(() => {
             appState.goToDesignsPage()
         }
     }, [design, appState])
+
+    const calculateDisplaySize = useCallback(() => {
+        if (!design?.image || !containerRef.current) {
+            return {width: 0, height: 0}
+        }
+
+        const container = containerRef.current
+        const containerRect = container.getBoundingClientRect()
+
+        const padding = EDITOR_PADDING * 2
+        const maxWidth = containerRect.width - padding
+        const maxHeight = containerRect.height - padding
+
+        const imageWidth = design.image.width
+        const imageHeight = design.image.height
+
+        const scaleX = maxWidth / imageWidth
+        const scaleY = maxHeight / imageHeight
+        const scale = Math.min(scaleX, scaleY, 1)
+
+        return {
+            width: imageWidth * scale,
+            height: imageHeight * scale,
+        }
+    }, [design?.image])
+
+    useEffect(() => {
+        const updateDisplaySize = () => {
+            const newSize = calculateDisplaySize()
+            setCanvasDisplaySize(newSize)
+        }
+
+        updateDisplaySize()
+        document.addEventListener('resize', updateDisplaySize)
+        return () => {
+            document.removeEventListener('resize', updateDisplaySize)
+        }
+    }, [calculateDisplaySize])
 
     const redrawCanvas = useCallback(
         (canvas: HTMLCanvasElement, layers: Layer[]) => {
@@ -83,12 +128,14 @@ export const EditorPage = observer(() => {
     const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
         e.stopPropagation()
         const canvas = canvasRef.current
-        if (!canvas || editorState.selectedTool === null) {
+        if (!canvas || editorState.selectedTool === null || !design?.image) {
             return
         }
+
         const rect = canvas.getBoundingClientRect()
-        const scaleX = canvas.width / rect.width
-        const scaleY = canvas.height / rect.height
+
+        const scaleX = design.image.width / rect.width
+        const scaleY = design.image.height / rect.height
 
         const x = (e.clientX - rect.left) * scaleX
         const y = (e.clientY - rect.top) * scaleY
@@ -162,9 +209,13 @@ export const EditorPage = observer(() => {
                     <ExportButton canvas={canvasRef.current} />
                 </div>
             </div>
-            <div className="flex h-full w-full overflow-hidden">
+            <div className="flex flex-1">
                 <div
-                    className="flex justify-center flex-1 h-full min-w-0 bg-surface-low p-10 overflow-hidden"
+                    ref={containerRef}
+                    className="flex justify-center items-center flex-1 h-full min-w-0 bg-surface-low overflow-hidden"
+                    style={{
+                        padding: `${EDITOR_PADDING}px`,
+                    }}
                     onClick={() => editorState.resetTool()}
                 >
                     <canvas
@@ -172,6 +223,12 @@ export const EditorPage = observer(() => {
                         className={tcn('bg-white', {
                             'cursor-pointer': editorState.selectedTool !== null,
                         })}
+                        style={{
+                            width: canvasDisplaySize.width,
+                            height: canvasDisplaySize.height,
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                        }}
                         onClick={onCanvasClick}
                     />
                 </div>
