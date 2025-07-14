@@ -12,4 +12,9 @@ export default defineConfig({
         tailwindcss(),
         svgr({include: '**/*.svg'}),
     ],
+    resolve: {
+        alias: {
+            '~': new URL('./src', import.meta.url).pathname,
+        },
+    },
 })
