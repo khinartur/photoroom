@@ -64,15 +64,11 @@ export const EditorPage = observer(() => {
     }, [design, appState])
 
     const calculateCanvasDisplayParams = useCallback(() => {
-        if (!design?.image || !containerRef.current || !canvasRef.current) {
+        if (!design?.image || !containerRef.current) {
             return
         }
 
         const containerRect = containerRef.current.getBoundingClientRect()
-        const canvasRect = canvasRef.current.getBoundingClientRect()
-
-        const canvasOffsetX = canvasRect.left - containerRect.left
-        const canvasOffsetY = canvasRect.top - containerRect.top
 
         const padding = EDITOR_PADDING * 2
         const maxWidth = containerRect.width - padding
@@ -85,9 +81,15 @@ export const EditorPage = observer(() => {
         const scaleY = maxHeight / imageHeight
         const scale = Math.min(scaleX, scaleY, 1)
 
+        const canvasWidth = imageWidth * scale
+        const canvasHeight = imageHeight * scale
+
+        const canvasOffsetX = (containerRect.width - canvasWidth) / 2
+        const canvasOffsetY = (containerRect.height - canvasHeight) / 2
+
         setCanvasDisplayParams({
-            width: imageWidth * scale,
-            height: imageHeight * scale,
+            width: canvasWidth,
+            height: canvasHeight,
             scale,
             canvasOffsetX,
             canvasOffsetY,
