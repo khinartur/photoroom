@@ -1,6 +1,12 @@
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {observer} from 'mobx-react-lite'
 import {
+    DndContext,
+    type DragEndEvent,
+    type DragStartEvent,
+    type DragMoveEvent,
+} from '@dnd-kit/core'
+import {
     useAppState,
     useDesignsState,
     useEditorState,
@@ -17,6 +23,7 @@ import {DeleteMenuItem} from '../../ui-kit/DeleteMenuItem'
 import {ExportButton} from './ExportButton'
 import {Sidebar} from './Sidebar'
 import {LayerFrame} from './LayerFrame'
+import {isChangeableLayer} from '../../utils/guards'
 
 export type CanvasDisplayParams = {
     width: number
@@ -24,6 +31,12 @@ export type CanvasDisplayParams = {
     scale: number
     canvasOffsetX: number
     canvasOffsetY: number
+}
+
+type DragState = {
+    isDragging: boolean
+    dragLayerId: string | null
+    dragDelta: {x: number; y: number} | null
 }
 
 const EDITOR_PADDING = 40
@@ -46,7 +59,14 @@ export const EditorPage = observer(() => {
             canvasOffsetY: 0,
         })
 
+    const [dragState, setDragState] = useState<DragState>({
+        isDragging: false,
+        dragLayerId: null,
+        dragDelta: null,
+    })
+
     const design = designsState.activeDesign
+    const selectedLayer = editorState.selectedLayer
     const defaultFontSize = editorState.defaultFontSize
 
     useEffect(() => {
@@ -63,6 +83,63 @@ export const EditorPage = observer(() => {
             appState.goToDesignsPage()
         }
     }, [design, appState])
+
+    const handleDragStart = useCallback((event: DragStartEvent) => {
+        const {active} = event
+        const layerData = active.data.current
+
+        if (!layerData || !layerData.layer) {
+            return
+        }
+
+        setDragState({
+            isDragging: true,
+            dragLayerId: layerData.layer.id,
+            dragDelta: {x: 0, y: 0},
+        })
+    }, [])
+
+    const handleDragMove = useCallback((event: DragMoveEvent) => {
+        const {delta} = event
+
+        setDragState(prev => ({
+            ...prev,
+            dragDelta: delta,
+        }))
+    }, [])
+
+    const handleDragEnd = useCallback(
+        (event: DragEndEvent) => {
+            const {active, delta} = event
+            const layerData = active.data.current
+
+            if (!layerData || !layerData.layer) {
+                setDragState({
+                    isDragging: false,
+                    dragLayerId: null,
+                    dragDelta: null,
+                })
+                return
+            }
+
+            const layer = layerData.layer
+
+            const deltaCanvasX = delta.x / canvasDisplayParams.scale
+            const deltaCanvasY = delta.y / canvasDisplayParams.scale
+
+            const newCanvasX = layer.x + deltaCanvasX
+            const newCanvasY = layer.y + deltaCanvasY
+
+            designsState.updateLayerPosition(layer.id, newCanvasX, newCanvasY)
+
+            setDragState({
+                isDragging: false,
+                dragLayerId: null,
+                dragDelta: null,
+            })
+        },
+        [designsState, canvasDisplayParams],
+    )
 
     const calculateCanvasDisplayParams = useCallback(() => {
         if (!design?.image || !canvasWrapperRef.current) {
@@ -134,16 +211,33 @@ export const EditorPage = observer(() => {
 
                 if (layer.type === 'EMOJI') {
                     const fontSize = layer.fontSize ?? defaultFontSize
+
+                    let x = layer.x
+                    let y = layer.y
+
+                    if (
+                        dragState.isDragging &&
+                        dragState.dragLayerId === layer.id &&
+                        dragState.dragDelta
+                    ) {
+                        const deltaCanvasX =
+                            dragState.dragDelta.x / canvasDisplayParams.scale
+                        const deltaCanvasY =
+                            dragState.dragDelta.y / canvasDisplayParams.scale
+                        x += deltaCanvasX
+                        y += deltaCanvasY
+                    }
+
                     ctx.font = `${fontSize}px serif`
                     ctx.fillText(
                         layer.emoji,
-                        layer.x - fontSize / 2,
-                        layer.y + fontSize / 2,
+                        x - fontSize / 2,
+                        y + fontSize / 2,
                     )
                 }
             }
         },
-        [design, defaultFontSize],
+        [design, defaultFontSize, dragState, canvasDisplayParams],
     )
 
     useEffect(() => {
@@ -213,96 +307,110 @@ export const EditorPage = observer(() => {
     }
 
     return (
-        <div ref={containerRef} className="flex flex-1 flex-col">
-            <div
-                className={tcn(
-                    'min-h-16 w-full flex items-center justify-between px-4',
-                    'bg-surface-high shadow-[0_1px_0_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.1)]',
-                )}
-            >
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="secondary"
-                        icon={<HomeIcon />}
-                        onClick={() => {
-                            editorState.resetTool()
-                            designsState.setSelectedLayerId(null)
-                            appState.goToDesignsPage()
-                        }}
-                    />
-                    <div className="flex items-center gap-0.5">
+        <DndContext
+            onDragStart={handleDragStart}
+            onDragMove={handleDragMove}
+            onDragEnd={handleDragEnd}
+        >
+            <div ref={containerRef} className="flex flex-1 flex-col">
+                <div
+                    className={tcn(
+                        'min-h-16 w-full flex items-center justify-between px-4',
+                        'bg-surface-high shadow-[0_1px_0_0_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.1)]',
+                    )}
+                >
+                    <div className="flex items-center gap-2">
                         <Button
-                            variant="ghost"
-                            disabled={!historyState.canUndo}
-                            icon={<ReverseIcon />}
-                            onClick={() => historyState.undo()}
+                            variant="secondary"
+                            icon={<HomeIcon />}
+                            onClick={() => {
+                                editorState.resetTool()
+                                designsState.setSelectedLayerId(null)
+                                appState.goToDesignsPage()
+                            }}
                         />
-                        <Button
-                            variant="ghost"
-                            disabled={!historyState.canRedo}
-                            icon={<ReverseIcon />}
-                            iconClassName="scale-x-[-1]"
-                            onClick={() => historyState.redo()}
+                        <div className="flex items-center gap-0.5">
+                            <Button
+                                variant="ghost"
+                                disabled={!historyState.canUndo}
+                                icon={<ReverseIcon />}
+                                onClick={() => historyState.undo()}
+                            />
+                            <Button
+                                variant="ghost"
+                                disabled={!historyState.canRedo}
+                                icon={<ReverseIcon />}
+                                iconClassName="scale-x-[-1]"
+                                onClick={() => historyState.redo()}
+                            />
+                        </div>
+                    </div>
+                    <Tool
+                        icon={<ImagesIcon />}
+                        onClick={() => editorState.selectEmojiTool()}
+                    >
+                        Add Emoji
+                    </Tool>
+                    <div className="flex items-center gap-2">
+                        <Dropdown
+                            align="end"
+                            trigger={
+                                <Button variant="ghost" icon={<DotsIcon />} />
+                            }
+                            content={
+                                <div
+                                    className={tcn(
+                                        'w-[240px] bg-background-primary outline-none p-1',
+                                        'border border-misc-border rounded-[10px]',
+                                    )}
+                                    onClick={e => e.stopPropagation()}
+                                >
+                                    <DeleteMenuItem
+                                        onClick={() => {
+                                            if (design) {
+                                                modalsState.openDeleteDesignModal(
+                                                    [design.id],
+                                                )
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            }
                         />
+                        <ExportButton canvas={canvasRef.current} />
                     </div>
                 </div>
-                <Tool
-                    icon={<ImagesIcon />}
-                    onClick={() => editorState.selectEmojiTool()}
-                >
-                    Add Emoji
-                </Tool>
-                <div className="flex items-center gap-2">
-                    <Dropdown
-                        align="end"
-                        trigger={<Button variant="ghost" icon={<DotsIcon />} />}
-                        content={
-                            <div
-                                className={tcn(
-                                    'w-[240px] bg-background-primary outline-none p-1',
-                                    'border border-misc-border rounded-[10px]',
-                                )}
-                                onClick={e => e.stopPropagation()}
-                            >
-                                <DeleteMenuItem
-                                    onClick={() => {
-                                        if (design) {
-                                            modalsState.openDeleteDesignModal([
-                                                design.id,
-                                            ])
-                                        }
-                                    }}
-                                />
-                            </div>
-                        }
-                    />
-                    <ExportButton canvas={canvasRef.current} />
-                </div>
-            </div>
-            <div className="flex flex-1 overflow-hidden">
-                <div
-                    ref={canvasWrapperRef}
-                    className="relative flex justify-center items-center flex-1 bg-surface-low"
-                    style={{
-                        padding: `${EDITOR_PADDING}px`,
-                    }}
-                    onClick={() => editorState.resetTool()}
-                >
-                    <canvas
-                        ref={canvasRef}
-                        className={tcn('relatiive bg-white', {
-                            'cursor-pointer': editorState.selectedTool !== null,
-                        })}
+                <div className="flex flex-1 overflow-hidden">
+                    <div
+                        ref={canvasWrapperRef}
+                        className="relative flex justify-center items-center flex-1 bg-surface-low cursor-pointer"
                         style={{
-                            width: canvasDisplayParams.width,
-                            height: canvasDisplayParams.height,
+                            padding: `${EDITOR_PADDING}px`,
                         }}
-                        onClick={onCanvasClick}
-                    />
-                    <LayerFrame canvasDisplayParams={canvasDisplayParams} />
+                        onClick={() => editorState.resetTool()}
+                    >
+                        <canvas
+                            ref={canvasRef}
+                            className={tcn('relatiive bg-white', {
+                                'cursor-pointer':
+                                    editorState.selectedTool !== null,
+                            })}
+                            style={{
+                                width: canvasDisplayParams.width,
+                                height: canvasDisplayParams.height,
+                            }}
+                            onClick={onCanvasClick}
+                        />
+                        {selectedLayer && isChangeableLayer(selectedLayer) && (
+                            <LayerFrame
+                                selectedLayer={selectedLayer}
+                                canvasDisplayParams={canvasDisplayParams}
+                            />
+                        )}
+                    </div>
+                    <Sidebar />
                 </div>
-                <Sidebar />
             </div>
-        </div>
+        </DndContext>
     )
 })

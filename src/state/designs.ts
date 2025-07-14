@@ -29,6 +29,8 @@ export type EmojiLayer = CommonLayerProps & {
 
 export type Layer = ImageLayer | EmojiLayer
 
+export type ChangeableLayer = EmojiLayer
+
 export type Design = {
     id: string
     image: HTMLImageElement
@@ -117,6 +119,16 @@ export class DesignsState {
 
         design.layers = design.layers.map(layer =>
             layer.id === layerId ? {...layer, hidden} : layer,
+        )
+    }
+
+    updateLayerPosition(layerId: string, x: number, y: number) {
+        if (!this.activeDesign) return
+
+        this.activeDesign.layers = this.activeDesign.layers.map(layer =>
+            layer.id === layerId && layer.type === 'EMOJI'
+                ? {...layer, x, y}
+                : layer,
         )
     }
 }
