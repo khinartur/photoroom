@@ -16,6 +16,15 @@ import {Dropdown} from '../../ui-kit/Dropdown'
 import {DeleteMenuItem} from '../../ui-kit/DeleteMenuItem'
 import {ExportButton} from './ExportButton'
 import {Sidebar} from './Sidebar'
+import {LayerFrame} from './LayerFrame'
+
+export type CanvasDisplayParams = {
+    width: number
+    height: number
+    scale: number
+    canvasOffsetX: number
+    canvasOffsetY: number
+}
 
 const EDITOR_PADDING = 40
 
@@ -27,12 +36,26 @@ export const EditorPage = observer(() => {
     const historyState = useHistoryState()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
-    const [canvasDisplaySize, setCanvasDisplaySize] = useState({
-        width: 0,
-        height: 0,
-    })
+    const [canvasDisplayParams, setCanvasDisplayParams] =
+        useState<CanvasDisplayParams>({
+            width: 0,
+            height: 0,
+            scale: 0,
+            canvasOffsetX: 0,
+            canvasOffsetY: 0,
+        })
 
     const design = designsState.activeDesign
+    const defaultFontSize = editorState.defaultFontSize
+
+    useEffect(() => {
+        if (!design?.image) {
+            return
+        }
+        const defaultFontSize =
+            Math.min(design.image.width, design.image.height) / 10
+        editorState.setDefaultFontSize(defaultFontSize)
+    }, [design?.image, editorState])
 
     useEffect(() => {
         if (!design) {
@@ -40,13 +63,16 @@ export const EditorPage = observer(() => {
         }
     }, [design, appState])
 
-    const calculateDisplaySize = useCallback(() => {
-        if (!design?.image || !containerRef.current) {
-            return {width: 0, height: 0}
+    const calculateCanvasDisplayParams = useCallback(() => {
+        if (!design?.image || !containerRef.current || !canvasRef.current) {
+            return
         }
 
-        const container = containerRef.current
-        const containerRect = container.getBoundingClientRect()
+        const containerRect = containerRef.current.getBoundingClientRect()
+        const canvasRect = canvasRef.current.getBoundingClientRect()
+
+        const canvasOffsetX = canvasRect.left - containerRect.left
+        const canvasOffsetY = canvasRect.top - containerRect.top
 
         const padding = EDITOR_PADDING * 2
         const maxWidth = containerRect.width - padding
@@ -59,24 +85,35 @@ export const EditorPage = observer(() => {
         const scaleY = maxHeight / imageHeight
         const scale = Math.min(scaleX, scaleY, 1)
 
-        return {
+        setCanvasDisplayParams({
             width: imageWidth * scale,
             height: imageHeight * scale,
-        }
+            scale,
+            canvasOffsetX,
+            canvasOffsetY,
+        })
     }, [design?.image])
 
     useEffect(() => {
-        const updateDisplaySize = () => {
-            const newSize = calculateDisplaySize()
-            setCanvasDisplaySize(newSize)
+        calculateCanvasDisplayParams()
+
+        if (!containerRef.current) {
+            return
         }
 
-        updateDisplaySize()
-        document.addEventListener('resize', updateDisplaySize)
+        const resizeObserver = new ResizeObserver(() => {
+            // Delay to give the browser time to reflow
+            requestAnimationFrame(() => {
+                calculateCanvasDisplayParams()
+            })
+        })
+
+        resizeObserver.observe(containerRef.current)
+
         return () => {
-            document.removeEventListener('resize', updateDisplaySize)
+            resizeObserver.disconnect()
         }
-    }, [calculateDisplaySize])
+    }, [calculateCanvasDisplayParams])
 
     const redrawCanvas = useCallback(
         (canvas: HTMLCanvasElement, layers: Layer[]) => {
@@ -93,7 +130,7 @@ export const EditorPage = observer(() => {
                 }
 
                 if (layer.type === 'EMOJI') {
-                    const fontSize = design.image.width / 10
+                    const fontSize = layer.fontSize ?? defaultFontSize
                     ctx.font = `${fontSize}px serif`
                     ctx.fillText(
                         layer.emoji,
@@ -103,7 +140,7 @@ export const EditorPage = observer(() => {
                 }
             }
         },
-        [design],
+        [design, defaultFontSize],
     )
 
     useEffect(() => {
@@ -157,6 +194,7 @@ export const EditorPage = observer(() => {
                         icon={<HomeIcon />}
                         onClick={() => {
                             editorState.resetTool()
+                            designsState.setSelectedLayerId(null)
                             appState.goToDesignsPage()
                         }}
                     />
@@ -212,7 +250,7 @@ export const EditorPage = observer(() => {
             <div className="flex flex-1">
                 <div
                     ref={containerRef}
-                    className="flex justify-center items-center flex-1 h-full min-w-0 bg-surface-low overflow-hidden"
+                    className="relative flex justify-center items-center flex-1 h-full min-w-0 bg-surface-low overflow-hidden"
                     style={{
                         padding: `${EDITOR_PADDING}px`,
                     }}
@@ -220,17 +258,18 @@ export const EditorPage = observer(() => {
                 >
                     <canvas
                         ref={canvasRef}
-                        className={tcn('bg-white', {
+                        className={tcn('relatiive bg-white', {
                             'cursor-pointer': editorState.selectedTool !== null,
                         })}
                         style={{
-                            width: canvasDisplaySize.width,
-                            height: canvasDisplaySize.height,
+                            width: canvasDisplayParams.width,
+                            height: canvasDisplayParams.height,
                             maxWidth: '100%',
                             maxHeight: '100%',
                         }}
                         onClick={onCanvasClick}
                     />
+                    <LayerFrame canvasDisplayParams={canvasDisplayParams} />
                 </div>
                 <Sidebar />
             </div>

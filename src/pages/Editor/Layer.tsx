@@ -5,10 +5,17 @@ import {EyeCrossedIcon, EyeIcon} from '../../icons'
 
 type LayerProps = {
     layer: LayerType
+    selected: boolean
+    onClick: (layerId: LayerType['id']) => void
     onVisibilityChange: (hidden: boolean) => void
 }
 
-export const Layer: React.FC<LayerProps> = ({layer, onVisibilityChange}) => {
+export const Layer: React.FC<LayerProps> = ({
+    layer,
+    selected,
+    onClick,
+    onVisibilityChange,
+}) => {
     const leftContent = () => {
         if (layer.type === 'IMAGE') {
             return (
@@ -33,8 +40,10 @@ export const Layer: React.FC<LayerProps> = ({layer, onVisibilityChange}) => {
         <div
             className={tcn(
                 'flex items-center justify-between h-14 rounded-[10px] p-2',
-                'bg-background-subdued',
+                'bg-background-subdued cursor-pointer border border-transparent',
+                selected && 'border-content-accent',
             )}
+            onClick={() => onClick(layer.id)}
         >
             <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center overflow-hidden size-10">

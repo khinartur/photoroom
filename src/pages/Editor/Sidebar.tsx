@@ -3,10 +3,19 @@ import {useDesignsState, useEditorState} from '../../providers/root'
 import {Layer} from './Layer'
 import {EmojiSelector} from './Tools/EmojiSelector'
 import {tcn} from '../../utils/tcn'
+import {useCallback} from 'react'
+import type {Layer as LayerType} from '@/state/designs'
 
 export const Sidebar = observer(() => {
     const designsState = useDesignsState()
     const editorState = useEditorState()
+
+    const onLayerClick = useCallback(
+        (layerId: LayerType['id']) => {
+            designsState.setSelectedLayerId(layerId)
+        },
+        [designsState],
+    )
 
     const getContent = () => {
         if (editorState.selectedTool !== null) {
@@ -24,6 +33,8 @@ export const Sidebar = observer(() => {
                     <Layer
                         key={layer.id}
                         layer={layer}
+                        selected={design.selectedLayerId === layer.id}
+                        onClick={onLayerClick}
                         onVisibilityChange={hidden => {
                             designsState.updateLayerVisibility(
                                 design.id,

@@ -2,6 +2,7 @@ import {makeAutoObservable} from 'mobx'
 import type {RootState} from './root'
 import type {IDBPDatabase} from 'idb'
 import type {PhotoroomDBSchema} from '../utils/idb'
+import type {Layer} from './designs'
 
 type EditorTool = (clickX: number, clickY: number) => void
 
@@ -11,6 +12,7 @@ export class EditorState {
 
     selectedTool: EditorTool | null = null
     selectedEmoji: string | null = null
+    defaultFontSize = 0
 
     constructor(rootState: RootState, db: IDBPDatabase<PhotoroomDBSchema>) {
         makeAutoObservable(this)
@@ -47,5 +49,19 @@ export class EditorState {
 
     resetTool() {
         this.selectedTool = null
+    }
+
+    setDefaultFontSize(size: number) {
+        this.defaultFontSize = size
+    }
+
+    get selectedLayer(): Layer | undefined {
+        const activeDesign = this.rootState.designsState.activeDesign
+        if (!activeDesign || !activeDesign.selectedLayerId) {
+            return undefined
+        }
+        return activeDesign.layers.find(
+            l => l.id === activeDesign.selectedLayerId,
+        )
     }
 }

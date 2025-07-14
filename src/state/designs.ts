@@ -24,6 +24,7 @@ export type EmojiLayer = CommonLayerProps & {
     emoji: string
     x: number
     y: number
+    fontSize?: number
 }
 
 export type Layer = ImageLayer | EmojiLayer
@@ -32,6 +33,7 @@ export type Design = {
     id: string
     image: HTMLImageElement
     layers: Layer[]
+    selectedLayerId?: string | null
 }
 
 export class DesignsState {
@@ -89,6 +91,13 @@ export class DesignsState {
             return
         }
         this.activeDesign.layers = [...this.activeDesign.layers, layer]
+    }
+
+    setSelectedLayerId(layerId: string | null) {
+        if (!this.activeDesign) {
+            return
+        }
+        this.activeDesign.selectedLayerId = layerId
     }
 
     removeLastLayer() {
