@@ -168,7 +168,7 @@ export const EditorPage = observer(() => {
     const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
         e.stopPropagation()
         const canvas = canvasRef.current
-        if (!canvas || editorState.selectedTool === null || !design?.image) {
+        if (!canvas || !design?.image) {
             return
         }
 
@@ -180,7 +180,36 @@ export const EditorPage = observer(() => {
         const x = (e.clientX - rect.left) * scaleX
         const y = (e.clientY - rect.top) * scaleY
 
-        editorState.applyTool(x, y)
+        if (editorState.selectedTool !== null) {
+            editorState.applyTool(x, y)
+            return
+        }
+
+        for (let i = design.layers.length - 1; i >= 0; i--) {
+            const layer = design.layers[i]
+            if (layer.hidden) {
+                continue
+            }
+
+            if (layer.type === 'EMOJI') {
+                const fontSize = layer.fontSize ?? defaultFontSize
+
+                const halfSize = fontSize / 2
+                const isWithinBounds =
+                    x >= layer.x - halfSize &&
+                    x <= layer.x + halfSize &&
+                    y >= layer.y - halfSize &&
+                    y <= layer.y + halfSize
+
+                if (isWithinBounds) {
+                    designsState.setSelectedLayerId(layer.id)
+                    return
+                }
+            }
+        }
+
+        // Reset selection if no layer was clicked
+        designsState.setSelectedLayerId(null)
     }
 
     return (
