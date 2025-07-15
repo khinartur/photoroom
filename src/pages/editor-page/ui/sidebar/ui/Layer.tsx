@@ -38,6 +38,8 @@ export const Layer: React.FC<LayerProps> = ({
         return null
     }
 
+    const isInitLayer = layer.type === 'IMAGE'
+
     return (
         <div
             className={tcn(
@@ -55,22 +57,24 @@ export const Layer: React.FC<LayerProps> = ({
                     {layer.name}
                 </span>
             </div>
-            <div className="flex items-center">
-                <Button
-                    variant="ghost"
-                    icon={<TrashIcon />}
-                    onClick={() => {
-                        onDelete(layer.id)
-                    }}
-                />
-                <Button
-                    variant="ghost"
-                    icon={layer.hidden ? <EyeCrossedIcon /> : <EyeIcon />}
-                    onClick={() => {
-                        onVisibilityChange(!layer.hidden)
-                    }}
-                />
-            </div>
+            {!isInitLayer && (
+                <div className="flex items-center">
+                    <Button
+                        variant="ghost"
+                        icon={<TrashIcon />}
+                        onClick={() => {
+                            onDelete(layer.id)
+                        }}
+                    />
+                    <Button
+                        variant="ghost"
+                        icon={layer.hidden ? <EyeCrossedIcon /> : <EyeIcon />}
+                        onClick={() => {
+                            onVisibilityChange(!layer.hidden)
+                        }}
+                    />
+                </div>
+            )}
         </div>
     )
 }
