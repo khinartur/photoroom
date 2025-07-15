@@ -18,7 +18,7 @@ export class HistoryState {
         this.rootState = rootState
 
         reaction(
-            () => this.rootState.designsState.activeDesign,
+            () => this.rootState.editorState.activeDesign,
             () => {
                 this.undoCount = 0
                 this.redoLayer = null
@@ -26,7 +26,7 @@ export class HistoryState {
         )
 
         reaction(
-            () => this.rootState.designsState.activeDesign?.layers,
+            () => this.rootState.editorState.activeDesign?.layers,
             (newVal, prevVal) => {
                 if (newVal && prevVal && newVal.length > prevVal.length) {
                     this.undoCount++
@@ -40,7 +40,7 @@ export class HistoryState {
             return
         }
         this.undoCount--
-        const removed = this.rootState.designsState.removeLastLayer()
+        const removed = this.rootState.editorState.removeLastLayer()
         if (removed) {
             this.redoLayer = removed
         }
@@ -52,7 +52,7 @@ export class HistoryState {
 
     redo() {
         if (this.redoLayer) {
-            this.rootState.designsState.addLayer(this.redoLayer)
+            this.rootState.editorState.addLayer(this.redoLayer)
             this.redoLayer = null
         }
     }

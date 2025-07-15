@@ -2,20 +2,21 @@ import {observer} from 'mobx-react-lite'
 import {useDraggable} from '@dnd-kit/core'
 import {CSS} from '@dnd-kit/utilities'
 import type {ChangeableLayer} from '~/shared/state'
-import {useEditorState} from '~/shared/state'
 import type {CanvasDisplayParams} from '../../types'
 import {Corner} from './Corner'
 
 type LayerFrameProps = {
     selectedLayer: ChangeableLayer
+    defaultFontSize: number
     canvasDisplayParams: CanvasDisplayParams
 }
 
 export const LayerFrame = observer(
-    ({selectedLayer, canvasDisplayParams}: LayerFrameProps) => {
-        const editorState = useEditorState()
-        const defaultFontSize = editorState.defaultFontSize
-
+    ({
+        selectedLayer,
+        canvasDisplayParams,
+        defaultFontSize,
+    }: LayerFrameProps) => {
         const fontSize = selectedLayer.fontSize ?? defaultFontSize
         const displayFontSize = fontSize * canvasDisplayParams.scale
 

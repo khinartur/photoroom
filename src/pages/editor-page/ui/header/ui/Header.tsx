@@ -2,7 +2,6 @@ import type {RefObject} from 'react'
 import {observer} from 'mobx-react-lite'
 import {
     useAppState,
-    useDesignsState,
     useEditorState,
     useHistoryState,
     useModalsState,
@@ -18,12 +17,11 @@ type HeaderProps = {
 
 export const Header = observer(({canvasRef}: HeaderProps) => {
     const appState = useAppState()
-    const designsState = useDesignsState()
     const editorState = useEditorState()
     const modalsState = useModalsState()
     const historyState = useHistoryState()
 
-    const design = designsState.activeDesign
+    const design = editorState.activeDesign
 
     return (
         <div
@@ -38,7 +36,7 @@ export const Header = observer(({canvasRef}: HeaderProps) => {
                     icon={<HomeIcon />}
                     onClick={() => {
                         editorState.resetTool()
-                        designsState.setSelectedLayerId(null)
+                        editorState.setSelectedLayer(null)
                         appState.goToDesignsPage()
                     }}
                 />

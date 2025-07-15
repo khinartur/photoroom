@@ -35,7 +35,6 @@ export type Design = {
     id: string
     image: HTMLImageElement
     layers: Layer[]
-    selectedLayerId?: string | null
 }
 
 export class DesignsState {
@@ -69,75 +68,11 @@ export class DesignsState {
         })
     }
 
-    get activeDesign() {
-        const id =
-            this.rootState.appState.page.type === 'EDITOR'
-                ? this.rootState.appState.page.designId
-                : null
-        if (!id) {
-            return null
-        }
-        return this.designs.find(d => d.id === id)
-    }
-
     addDesign(design: Design) {
         this.designs = [...this.designs, design]
     }
 
     deleteDesigns(ids: Design['id'][]) {
         this.designs = this.designs.filter(d => !ids.includes(d.id))
-    }
-
-    addLayer(layer: Layer) {
-        if (!this.activeDesign) {
-            return
-        }
-        this.activeDesign.layers = [...this.activeDesign.layers, layer]
-    }
-
-    deleteLayer(layerId: Layer['id']) {
-        if (!this.activeDesign) {
-            return
-        }
-        this.activeDesign.layers = this.activeDesign.layers.filter(
-            layer => layer.id !== layerId,
-        )
-    }
-
-    setSelectedLayerId(layerId: string | null) {
-        if (!this.activeDesign) {
-            return
-        }
-        this.activeDesign.selectedLayerId = layerId
-    }
-
-    removeLastLayer() {
-        if (!this.activeDesign) {
-            return
-        }
-        const removed = {
-            ...this.activeDesign.layers[this.activeDesign.layers.length - 1],
-        }
-        this.activeDesign.layers = [...this.activeDesign.layers.slice(0, -1)]
-        return removed
-    }
-
-    updateLayerVisibility(designId: string, layerId: string, hidden: boolean) {
-        const design = this.designs.find(d => d.id === designId)
-        if (!design) return
-
-        design.layers = design.layers.map(layer =>
-            layer.id === layerId ? {...layer, hidden} : layer,
-        )
-    }
-
-    updateLayerPosition(layerId: string, x: number, y: number) {
-        if (!this.activeDesign) return
-
-        this.activeDesign.layers = this.activeDesign.layers.map(layer =>
-            layer.id === layerId && layer.type === 'EMOJI'
-                ? {...layer, x, y}
-                : layer,
-        )
     }
 }

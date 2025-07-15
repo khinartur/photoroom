@@ -7,7 +7,7 @@ import {
     type DragMoveEvent,
 } from '@dnd-kit/core'
 import type {Layer} from '~/shared/state'
-import {useAppState, useDesignsState, useEditorState} from '~/shared/state'
+import {useAppState, useEditorState} from '~/shared/state'
 import {isChangeableLayer, tcn} from '~/shared/utils'
 import {Sidebar} from './sidebar'
 import {LayerFrame} from './layer-frame'
@@ -18,7 +18,6 @@ import {Header} from './header'
 
 export const EditorPage = observer(() => {
     const appState = useAppState()
-    const designsState = useDesignsState()
     const editorState = useEditorState()
     const containerRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -30,24 +29,14 @@ export const EditorPage = observer(() => {
         dragDelta: null,
     })
 
-    const design = designsState.activeDesign
+    const design = editorState.activeDesign
     const selectedLayer = editorState.selectedLayer
-    const defaultFontSize = editorState.defaultFontSize
 
     const canvasDisplayParams = useCalculateCanvasDisplayParams(
         containerRef,
         canvasWrapperRef,
         design,
     )
-
-    useEffect(() => {
-        if (!design?.image) {
-            return
-        }
-        const defaultFontSize =
-            Math.min(design.image.width, design.image.height) / 10
-        editorState.setDefaultFontSize(defaultFontSize)
-    }, [design?.image, editorState])
 
     useEffect(() => {
         if (!design) {
@@ -101,7 +90,7 @@ export const EditorPage = observer(() => {
             const newCanvasX = layer.x + deltaCanvasX
             const newCanvasY = layer.y + deltaCanvasY
 
-            designsState.updateLayerPosition(layer.id, newCanvasX, newCanvasY)
+            editorState.updateLayerPosition(layer.id, newCanvasX, newCanvasY)
 
             setDragState({
                 isDragging: false,
@@ -109,7 +98,7 @@ export const EditorPage = observer(() => {
                 dragDelta: null,
             })
         },
-        [designsState, canvasDisplayParams],
+        [editorState, canvasDisplayParams],
     )
 
     const redrawCanvas = useCallback(
@@ -127,7 +116,8 @@ export const EditorPage = observer(() => {
                 }
 
                 if (layer.type === 'EMOJI') {
-                    const fontSize = layer.fontSize ?? defaultFontSize
+                    const fontSize =
+                        layer.fontSize ?? editorState.defaultFontSize
 
                     let x = layer.x
                     let y = layer.y
@@ -154,7 +144,7 @@ export const EditorPage = observer(() => {
                 }
             }
         },
-        [design, defaultFontSize, dragState, canvasDisplayParams],
+        [design, dragState, canvasDisplayParams, editorState.defaultFontSize],
     )
 
     useEffect(() => {
@@ -203,7 +193,7 @@ export const EditorPage = observer(() => {
             }
 
             if (layer.type === 'EMOJI') {
-                const fontSize = layer.fontSize ?? defaultFontSize
+                const fontSize = layer.fontSize ?? editorState.defaultFontSize
 
                 const halfSize = fontSize / 2
                 const isWithinBounds =
@@ -213,14 +203,14 @@ export const EditorPage = observer(() => {
                     y <= layer.y + halfSize
 
                 if (isWithinBounds) {
-                    designsState.setSelectedLayerId(layer.id)
+                    editorState.setSelectedLayer(layer.id)
                     return
                 }
             }
         }
 
         // Reset selection if no layer was clicked
-        designsState.setSelectedLayerId(null)
+        editorState.setSelectedLayer(null)
     }
 
     return (
@@ -252,12 +242,17 @@ export const EditorPage = observer(() => {
                             }}
                             onClick={onCanvasClick}
                         />
-                        {selectedLayer && isChangeableLayer(selectedLayer) && (
-                            <LayerFrame
-                                selectedLayer={selectedLayer}
-                                canvasDisplayParams={canvasDisplayParams}
-                            />
-                        )}
+                        {design &&
+                            selectedLayer &&
+                            isChangeableLayer(selectedLayer) && (
+                                <LayerFrame
+                                    selectedLayer={selectedLayer}
+                                    defaultFontSize={
+                                        editorState.defaultFontSize
+                                    }
+                                    canvasDisplayParams={canvasDisplayParams}
+                                />
+                            )}
                     </div>
                     <Sidebar />
                 </div>

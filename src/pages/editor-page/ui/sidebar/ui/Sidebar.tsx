@@ -1,30 +1,25 @@
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
-import {
-    useDesignsState,
-    useEditorState,
-    type Layer as LayerType,
-} from '~/shared/state'
+import {useEditorState, type Layer as LayerType} from '~/shared/state'
 import {tcn} from '~/shared/utils'
 import {EmojiSelector} from '../../tools'
 import {Layer} from './Layer'
 
 export const Sidebar = observer(() => {
-    const designsState = useDesignsState()
     const editorState = useEditorState()
 
     const onLayerClick = useCallback(
         (layerId: LayerType['id']) => {
-            designsState.setSelectedLayerId(layerId)
+            editorState.setSelectedLayer(layerId)
         },
-        [designsState],
+        [editorState],
     )
 
     const onLayerDelete = useCallback(
         (layerId: LayerType['id']) => {
-            designsState.deleteLayer(layerId)
+            editorState.deleteLayer(layerId)
         },
-        [designsState],
+        [editorState],
     )
 
     const getContent = () => {
@@ -32,7 +27,7 @@ export const Sidebar = observer(() => {
             return <EmojiSelector />
         }
 
-        const design = designsState.activeDesign
+        const design = editorState.activeDesign
         if (!design) {
             return null
         }
@@ -43,15 +38,11 @@ export const Sidebar = observer(() => {
                     <Layer
                         key={layer.id}
                         layer={layer}
-                        selected={design.selectedLayerId === layer.id}
+                        selected={editorState.selectedLayer?.id === layer.id}
                         onClick={onLayerClick}
                         onDelete={onLayerDelete}
                         onVisibilityChange={hidden => {
-                            designsState.updateLayerVisibility(
-                                design.id,
-                                layer.id,
-                                hidden,
-                            )
+                            editorState.updateLayerVisibility(layer.id, hidden)
                         }}
                     />
                 ))}
