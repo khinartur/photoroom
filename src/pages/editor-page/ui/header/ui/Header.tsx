@@ -36,7 +36,7 @@ export const Header = observer(({canvasRef}: HeaderProps) => {
                     icon={<HomeIcon />}
                     onClick={() => {
                         editorState.resetTool()
-                        editorState.setSelectedLayer(null)
+                        editorState.setSelectedLayerId(null)
                         appState.goToDesignsPage()
                     }}
                 />

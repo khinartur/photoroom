@@ -30,7 +30,10 @@ export const EditorPage = observer(() => {
     })
 
     const design = editorState.activeDesign
-    const selectedLayer = editorState.selectedLayer
+    const selectedLayer = design?.layers.find(
+        layer => layer.id === editorState.selectedLayerId,
+    )
+    const defaultFontSize = editorState.defaultFontSize
 
     const canvasDisplayParams = useCalculateCanvasDisplayParams(
         containerRef,
@@ -116,8 +119,7 @@ export const EditorPage = observer(() => {
                 }
 
                 if (layer.type === 'EMOJI') {
-                    const fontSize =
-                        layer.fontSize ?? editorState.defaultFontSize
+                    const fontSize = layer.fontSize ?? defaultFontSize
 
                     let x = layer.x
                     let y = layer.y
@@ -144,7 +146,7 @@ export const EditorPage = observer(() => {
                 }
             }
         },
-        [design, dragState, canvasDisplayParams, editorState.defaultFontSize],
+        [design, dragState, canvasDisplayParams, defaultFontSize],
     )
 
     useEffect(() => {
@@ -203,14 +205,14 @@ export const EditorPage = observer(() => {
                     y <= layer.y + halfSize
 
                 if (isWithinBounds) {
-                    editorState.setSelectedLayer(layer.id)
+                    editorState.setSelectedLayerId(layer.id)
                     return
                 }
             }
         }
 
         // Reset selection if no layer was clicked
-        editorState.setSelectedLayer(null)
+        editorState.setSelectedLayerId(null)
     }
 
     return (
@@ -247,9 +249,7 @@ export const EditorPage = observer(() => {
                             isChangeableLayer(selectedLayer) && (
                                 <LayerFrame
                                     selectedLayer={selectedLayer}
-                                    defaultFontSize={
-                                        editorState.defaultFontSize
-                                    }
+                                    defaultFontSize={defaultFontSize}
                                     canvasDisplayParams={canvasDisplayParams}
                                 />
                             )}

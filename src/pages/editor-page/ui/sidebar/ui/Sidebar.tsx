@@ -10,7 +10,7 @@ export const Sidebar = observer(() => {
 
     const onLayerClick = useCallback(
         (layerId: LayerType['id']) => {
-            editorState.setSelectedLayer(layerId)
+            editorState.setSelectedLayerId(layerId)
         },
         [editorState],
     )
@@ -38,7 +38,7 @@ export const Sidebar = observer(() => {
                     <Layer
                         key={layer.id}
                         layer={layer}
-                        selected={editorState.selectedLayer?.id === layer.id}
+                        selected={editorState.selectedLayerId === layer.id}
                         onClick={onLayerClick}
                         onDelete={onLayerDelete}
                         onVisibilityChange={hidden => {

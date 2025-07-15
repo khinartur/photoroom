@@ -11,7 +11,7 @@ export class EditorState {
     db: IDBPDatabase<PhotoroomDBSchema>
 
     defaultFontSize = 0
-    selectedLayer: Layer | null = null
+    selectedLayerId: Layer['id'] | null = null
     selectedTool: EditorTool | null = null
     selectedEmoji: string | null = null
 
@@ -42,18 +42,8 @@ export class EditorState {
         return this.rootState.designsState.designs.find(d => d.id === id)
     }
 
-    setSelectedLayer(layerId: Layer['id'] | null) {
-        if (!layerId) {
-            this.selectedLayer = null
-            return
-        }
-
-        const activeDesign = this.activeDesign
-        if (!activeDesign) {
-            return
-        }
-        this.selectedLayer =
-            this.activeDesign.layers.find(layer => layer.id === layerId) ?? null
+    setSelectedLayerId(layerId: Layer['id'] | null) {
+        this.selectedLayerId = layerId
     }
 
     addLayer(layer: Layer) {
