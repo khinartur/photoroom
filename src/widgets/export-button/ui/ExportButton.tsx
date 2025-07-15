@@ -27,7 +27,11 @@ export const ExportButton = observer(
         return (
             <Dropdown
                 align="end"
-                trigger={<Button variant="accent" icon={<DownloadIcon />} />}
+                trigger={
+                    <Button variant="accent" icon={<DownloadIcon />}>
+                        Export
+                    </Button>
+                }
                 content={
                     <div
                         className={tcn(
@@ -36,12 +40,12 @@ export const ExportButton = observer(
                         )}
                     >
                         <span className="text-[17px] text-content-primary font-bold">
-                            Download
+                            Export
                         </span>
                         <form onSubmit={onExport}>
                             <div className="flex flex-col gap-6">
                                 <Input
-                                    label="File name"
+                                    label="Enter file name"
                                     value={fileName}
                                     onChange={e => setFileName(e.target.value)}
                                 />
@@ -49,7 +53,7 @@ export const ExportButton = observer(
                                     type="submit"
                                     disabled={fileName.length === 0}
                                 >
-                                    Download
+                                    Export
                                 </Button>
                             </div>
                         </form>

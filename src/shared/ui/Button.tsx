@@ -27,18 +27,28 @@ export const Button = ({
                 'flex gap-2 items-center justify-center overflow-hidden rounded-[10px] outline-none',
                 'h-10 px-4 appearance-none font-medium text-[14px] cursor-pointer',
                 {
-                    'bg-background-accent hover:bg-background-accent-hover active:bg-background-accent-down text-white':
-                        variant === 'primary',
-                    'bg-background-subdued hover:bg-background-subdued-hover active:bg-background-subdued-down  text-content-primary':
+                    'bg-background-accent text-white': variant === 'primary',
+                    'hover:bg-background-accent-hover active:bg-background-accent-down':
+                        variant === 'primary' && !disabled,
+
+                    'bg-background-subdued text-content-primary':
                         variant === 'secondary',
-                    'bg-transparent hover:bg-background-subdued-hover active:bg-background-subdued-down  text-content-primary':
-                        variant === 'ghost',
-                    'bg-background-accent-subdued hover:bg-background-accent-subdued-hover active:bg-background-accent-subdued-down text-content-accent':
+                    'bg-transparent text-content-primary': variant === 'ghost',
+                    'hover:bg-background-subdued-hover active:bg-background-subdued-down':
+                        (variant === 'secondary' || variant === 'ghost') &&
+                        !disabled,
+
+                    'bg-background-accent-subdued text-content-accent':
                         variant === 'accent',
-                    'bg-negative-alpha-1 hover:bg-negative-alpha-2 active:bg-negative-alpha-3 text-content-negative':
+                    'hover:bg-background-accent-subdued-hover active:bg-background-accent-subdued-down':
+                        variant === 'accent' && !disabled,
+
+                    'bg-negative-alpha-1 text-content-negative':
                         variant === 'negative',
-                    'opacity-50 cursor-not-allowed hover:bg-transparent active:bg-transparent':
-                        disabled,
+                    'hover:bg-negative-alpha-2 active:bg-negative-alpha-3':
+                        variant === 'negative' && !disabled,
+
+                    'opacity-50 cursor-not-allowed': disabled,
                     'w-10 px-0': !children,
                 },
             )}
