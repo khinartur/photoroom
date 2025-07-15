@@ -6,15 +6,15 @@ import {
     type DragStartEvent,
     type DragMoveEvent,
 } from '@dnd-kit/core'
+import type {Layer} from '~/shared/state'
 import {useAppState, useDesignsState, useEditorState} from '~/shared/state'
 import {isChangeableLayer, tcn} from '~/shared/utils'
-import type {Layer} from '~/shared/state/designs'
 import {Sidebar} from './sidebar'
 import {LayerFrame} from './layer-frame'
 import {EDITOR_PADDING} from '../constants'
 import type {DragState} from '../types'
 import {useCalculateCanvasDisplayParams} from '../hooks'
-import {Header} from './header/ui/Header'
+import {Header} from './header'
 
 export const EditorPage = observer(() => {
     const appState = useAppState()

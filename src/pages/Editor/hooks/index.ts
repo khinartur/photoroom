@@ -1,1 +1,1 @@
-export * from './useCalculateCanvasDisplayParams'
+export {useCalculateCanvasDisplayParams} from './useCalculateCanvasDisplayParams'

@@ -1,1 +1,1 @@
-export * from './Folder'
+export {FolderPage} from './Folder'

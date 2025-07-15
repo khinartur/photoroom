@@ -1,6 +1,6 @@
 import {observer} from 'mobx-react-lite'
 import {useAppState} from '~/shared/state'
-import {CreatePage, DesignsPage, EditorPage, FolderPage} from '~/pages/index'
+import {CreatePage, DesignsPage, EditorPage, FolderPage} from '~/pages'
 
 export const Content = observer(() => {
     const appState = useAppState()

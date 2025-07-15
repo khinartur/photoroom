@@ -4,7 +4,7 @@ import './styles/index.css'
 
 import {App} from './App'
 import {RootStateProvider} from '~/shared/state'
-import {initDB} from '~/shared/utils/idb'
+import {initDB} from '~/shared/utils'
 import {Modals} from '~/widgets/modals'
 import {ToastProvider} from './providers'
 

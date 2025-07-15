@@ -1,1 +1,1 @@
-export * from './EmojiSelector'
+export {EmojiSelector} from './EmojiSelector'
