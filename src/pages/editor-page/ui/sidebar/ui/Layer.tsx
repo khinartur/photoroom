@@ -58,7 +58,12 @@ export const Layer: React.FC<LayerProps> = ({
                 </span>
             </div>
             {!isInitLayer && (
-                <div className="flex items-center">
+                <div
+                    className="flex items-center"
+                    onClick={e => {
+                        e.stopPropagation()
+                    }}
+                >
                     <Button
                         variant="ghost"
                         icon={<TrashIcon />}
