@@ -1,12 +1,13 @@
 import type {Layer as LayerType} from '~/shared/state'
 import {Button} from '~/shared/ui'
-import {EyeCrossedIcon, EyeIcon} from '~/shared/icons'
+import {EyeCrossedIcon, EyeIcon, TrashIcon} from '~/shared/icons'
 import {tcn} from '~/shared/utils'
 
 type LayerProps = {
     layer: LayerType
     selected: boolean
     onClick: (layerId: LayerType['id']) => void
+    onDelete: (layerId: LayerType['id']) => void
     onVisibilityChange: (hidden: boolean) => void
 }
 
@@ -14,6 +15,7 @@ export const Layer: React.FC<LayerProps> = ({
     layer,
     selected,
     onClick,
+    onDelete,
     onVisibilityChange,
 }) => {
     const leftContent = () => {
@@ -53,7 +55,14 @@ export const Layer: React.FC<LayerProps> = ({
                     {layer.name}
                 </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
+                <Button
+                    variant="ghost"
+                    icon={<TrashIcon />}
+                    onClick={() => {
+                        onDelete(layer.id)
+                    }}
+                />
                 <Button
                     variant="ghost"
                     icon={layer.hidden ? <EyeCrossedIcon /> : <EyeIcon />}

@@ -20,6 +20,13 @@ export const Sidebar = observer(() => {
         [designsState],
     )
 
+    const onLayerDelete = useCallback(
+        (layerId: LayerType['id']) => {
+            designsState.deleteLayer(layerId)
+        },
+        [designsState],
+    )
+
     const getContent = () => {
         if (editorState.selectedTool !== null) {
             return <EmojiSelector />
@@ -38,6 +45,7 @@ export const Sidebar = observer(() => {
                         layer={layer}
                         selected={design.selectedLayerId === layer.id}
                         onClick={onLayerClick}
+                        onDelete={onLayerDelete}
                         onVisibilityChange={hidden => {
                             designsState.updateLayerVisibility(
                                 design.id,

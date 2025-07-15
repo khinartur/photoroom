@@ -95,6 +95,15 @@ export class DesignsState {
         this.activeDesign.layers = [...this.activeDesign.layers, layer]
     }
 
+    deleteLayer(layerId: Layer['id']) {
+        if (!this.activeDesign) {
+            return
+        }
+        this.activeDesign.layers = this.activeDesign.layers.filter(
+            layer => layer.id !== layerId,
+        )
+    }
+
     setSelectedLayerId(layerId: string | null) {
         if (!this.activeDesign) {
             return
