@@ -1,20 +1,15 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef} from 'react'
 import {observer} from 'mobx-react-lite'
-import {
-    DndContext,
-    type DragEndEvent,
-    type DragStartEvent,
-    type DragMoveEvent,
-} from '@dnd-kit/core'
 import type {Layer} from '~/shared/state'
 import {useAppState, useEditorState} from '~/shared/state'
 import {isChangeableLayer, tcn} from '~/shared/utils'
 import {Sidebar} from './sidebar'
 import {LayerFrame} from './layer-frame'
-import {EDITOR_PADDING} from '../constants'
-import type {DragState} from '../types'
-import {useCalculateCanvasDisplayParams} from '../hooks'
+import {useCalculateCanvasDisplayParams, useOnCanvasClick} from '../hooks'
 import {Header} from './header'
+import {applyEmojiLayer} from '../utils'
+import {DragNDropProvider} from './providers'
+import {EDITOR_PADDING} from '~/shared/constants'
 
 export const EditorPage = observer(() => {
     const appState = useAppState()
@@ -23,13 +18,8 @@ export const EditorPage = observer(() => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const canvasWrapperRef = useRef<HTMLDivElement>(null)
 
-    const [dragState, setDragState] = useState<DragState>({
-        isDragging: false,
-        dragLayerId: null,
-        dragDelta: null,
-    })
-
     const design = editorState.activeDesign
+    const dragState = editorState.dragState
     const selectedLayer = design?.layers.find(
         layer => layer.id === editorState.selectedLayerId,
     )
@@ -41,68 +31,13 @@ export const EditorPage = observer(() => {
         design,
     )
 
+    const onCanvasClick = useOnCanvasClick(canvasRef, design)
+
     useEffect(() => {
         if (!design) {
             appState.goToDesignsPage()
         }
     }, [design, appState])
-
-    const handleDragStart = useCallback((event: DragStartEvent) => {
-        const {active} = event
-        const layerData = active.data.current
-
-        if (!layerData || !layerData.layer) {
-            return
-        }
-
-        setDragState({
-            isDragging: true,
-            dragLayerId: layerData.layer.id,
-            dragDelta: {x: 0, y: 0},
-        })
-    }, [])
-
-    const handleDragMove = useCallback((event: DragMoveEvent) => {
-        const {delta} = event
-
-        setDragState(prev => ({
-            ...prev,
-            dragDelta: delta,
-        }))
-    }, [])
-
-    const handleDragEnd = useCallback(
-        (event: DragEndEvent) => {
-            const {active, delta} = event
-            const layerData = active.data.current
-
-            if (!layerData || !layerData.layer) {
-                setDragState({
-                    isDragging: false,
-                    dragLayerId: null,
-                    dragDelta: null,
-                })
-                return
-            }
-
-            const layer = layerData.layer
-
-            const deltaCanvasX = delta.x / canvasDisplayParams.scale
-            const deltaCanvasY = delta.y / canvasDisplayParams.scale
-
-            const newCanvasX = layer.x + deltaCanvasX
-            const newCanvasY = layer.y + deltaCanvasY
-
-            editorState.updateLayerPosition(layer.id, newCanvasX, newCanvasY)
-
-            setDragState({
-                isDragging: false,
-                dragLayerId: null,
-                dragDelta: null,
-            })
-        },
-        [editorState, canvasDisplayParams],
-    )
 
     const redrawCanvas = useCallback(
         (canvas: HTMLCanvasElement, layers: Layer[]) => {
@@ -119,29 +54,12 @@ export const EditorPage = observer(() => {
                 }
 
                 if (layer.type === 'EMOJI') {
-                    const fontSize = layer.fontSize ?? defaultFontSize
-
-                    let x = layer.x
-                    let y = layer.y
-
-                    if (
-                        dragState.isDragging &&
-                        dragState.dragLayerId === layer.id &&
-                        dragState.dragDelta
-                    ) {
-                        const deltaCanvasX =
-                            dragState.dragDelta.x / canvasDisplayParams.scale
-                        const deltaCanvasY =
-                            dragState.dragDelta.y / canvasDisplayParams.scale
-                        x += deltaCanvasX
-                        y += deltaCanvasY
-                    }
-
-                    ctx.font = `${fontSize}px serif`
-                    ctx.fillText(
-                        layer.emoji,
-                        x - fontSize / 2,
-                        y + fontSize / 2,
+                    applyEmojiLayer(
+                        ctx,
+                        layer,
+                        dragState,
+                        canvasDisplayParams,
+                        defaultFontSize,
                     )
                 }
             }
@@ -168,59 +86,8 @@ export const EditorPage = observer(() => {
         redrawCanvas(canvas, design.layers)
     }, [design?.layers, redrawCanvas])
 
-    const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        e.stopPropagation()
-        const canvas = canvasRef.current
-        if (!canvas || !design?.image) {
-            return
-        }
-
-        const rect = canvas.getBoundingClientRect()
-
-        const scaleX = design.image.width / rect.width
-        const scaleY = design.image.height / rect.height
-
-        const x = (e.clientX - rect.left) * scaleX
-        const y = (e.clientY - rect.top) * scaleY
-
-        if (editorState.selectedTool !== null) {
-            editorState.applyTool(x, y)
-            return
-        }
-
-        for (let i = design.layers.length - 1; i >= 0; i--) {
-            const layer = design.layers[i]
-            if (layer.hidden) {
-                continue
-            }
-
-            if (layer.type === 'EMOJI') {
-                const fontSize = layer.fontSize ?? editorState.defaultFontSize
-
-                const halfSize = fontSize / 2
-                const isWithinBounds =
-                    x >= layer.x - halfSize &&
-                    x <= layer.x + halfSize &&
-                    y >= layer.y - halfSize &&
-                    y <= layer.y + halfSize
-
-                if (isWithinBounds) {
-                    editorState.setSelectedLayerId(layer.id)
-                    return
-                }
-            }
-        }
-
-        // Reset selection if no layer was clicked
-        editorState.setSelectedLayerId(null)
-    }
-
     return (
-        <DndContext
-            onDragStart={handleDragStart}
-            onDragMove={handleDragMove}
-            onDragEnd={handleDragEnd}
-        >
+        <DragNDropProvider canvasDisplayParams={canvasDisplayParams}>
             <div ref={containerRef} className="flex flex-1 flex-col">
                 <Header canvasRef={canvasRef} />
                 <div className="flex flex-1 overflow-hidden">
@@ -257,6 +124,6 @@ export const EditorPage = observer(() => {
                     <Sidebar />
                 </div>
             </div>
-        </DndContext>
+        </DragNDropProvider>
     )
 })

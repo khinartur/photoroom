@@ -3,6 +3,8 @@ import type {RootState} from './root'
 import type {IDBPDatabase} from 'idb'
 import type {PhotoroomDBSchema} from '../utils/idb'
 import type {Layer} from './designs'
+import type {DragState} from '../types'
+import {DEFAULT_DRAG_STATE} from '../constants'
 
 type EditorTool = (clickX: number, clickY: number) => void
 
@@ -10,6 +12,7 @@ export class EditorState {
     rootState: RootState
     db: IDBPDatabase<PhotoroomDBSchema>
 
+    dragState: DragState = DEFAULT_DRAG_STATE
     defaultFontSize = 0
     selectedLayerId: Layer['id'] | null = null
     selectedTool: EditorTool | null = null
@@ -29,6 +32,13 @@ export class EditorState {
                 }
             },
         )
+    }
+
+    setDragState(newState: Partial<DragState>) {
+        this.dragState = {
+            ...this.dragState,
+            ...newState,
+        }
     }
 
     get activeDesign() {

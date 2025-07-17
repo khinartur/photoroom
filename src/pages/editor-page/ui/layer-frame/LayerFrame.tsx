@@ -2,7 +2,7 @@ import {observer} from 'mobx-react-lite'
 import {useDraggable} from '@dnd-kit/core'
 import {CSS} from '@dnd-kit/utilities'
 import type {ChangeableLayer} from '~/shared/state'
-import type {CanvasDisplayParams} from '../../types'
+import type {CanvasDisplayParams} from '~/shared/types'
 import {Corner} from './Corner'
 
 type LayerFrameProps = {

@@ -1,0 +1,1 @@
+export {applyEmojiLayer} from './applyEmojiLayer'

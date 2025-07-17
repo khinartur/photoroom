@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState, type RefObject} from 'react'
-import type {CanvasDisplayParams} from '../types'
-import {EDITOR_PADDING} from '../constants'
+import type {CanvasDisplayParams} from '~/shared/types'
+import {EDITOR_PADDING} from '~/shared/constants'
 import type {Design} from '~/shared/state'
 
 export const useCalculateCanvasDisplayParams = (
