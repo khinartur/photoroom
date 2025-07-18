@@ -101,6 +101,16 @@ export class EditorState {
         )
     }
 
+    updateLayerFontSize(layerId: string, fontSize: number) {
+        if (!this.activeDesign) return
+
+        this.activeDesign.layers = this.activeDesign.layers.map(layer =>
+            layer.id === layerId && layer.type === 'EMOJI'
+                ? {...layer, fontSize}
+                : layer,
+        )
+    }
+
     applyTool(clickX: number, clickY: number) {
         this.selectedTool?.(clickX, clickY)
     }
