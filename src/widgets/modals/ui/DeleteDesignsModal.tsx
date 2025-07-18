@@ -1,5 +1,6 @@
 import {observer} from 'mobx-react-lite'
-import {useDesignsState, useModalsState, type Design} from '~/shared/state'
+import {useDesignsState, useModalsState} from '~/shared/state'
+import type {Design} from '~/shared/types'
 import {Modal, Button} from '~/shared/ui'
 import type {CommonModalProps} from '../types'
 

@@ -1,13 +1,14 @@
 import {useCallback, useEffect, useState, type RefObject} from 'react'
 import type {CanvasDisplayParams} from '~/shared/types'
 import {EDITOR_PADDING} from '~/shared/constants'
-import type {Design} from '~/shared/state'
+import {useEditorState} from '~/shared/state'
 
 export const useCalculateCanvasDisplayParams = (
     containerRef: RefObject<HTMLDivElement>,
     canvasWrapperRef: RefObject<HTMLDivElement>,
-    design?: Design | null,
 ): CanvasDisplayParams => {
+    const editorState = useEditorState()
+    const design = editorState.activeDesign
     const [canvasDisplayParams, setCanvasDisplayParams] =
         useState<CanvasDisplayParams>({
             width: 0,

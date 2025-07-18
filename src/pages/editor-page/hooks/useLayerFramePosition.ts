@@ -1,5 +1,5 @@
 import {useMemo} from 'react'
-import type {ChangeableLayer} from '~/shared/state'
+import type {ChangeableLayer} from '~/shared/types'
 import type {CanvasDisplayParams, LayerFramePosition} from '~/shared/types'
 
 export const useLayerFramePosition = (

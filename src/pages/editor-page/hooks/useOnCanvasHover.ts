@@ -1,12 +1,10 @@
 import type {RefObject} from 'react'
-import {useEditorState, type Design} from '~/shared/state'
+import {useEditorState} from '~/shared/state'
 import {getCursorLayerId} from '../utils'
 
-export const useOnCanvasHover = (
-    canvasRef: RefObject<HTMLCanvasElement>,
-    design?: Design | null,
-) => {
+export const useOnCanvasHover = (canvasRef: RefObject<HTMLCanvasElement>) => {
     const editorState = useEditorState()
+    const design = editorState.activeDesign
 
     const onCanvasHover = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current

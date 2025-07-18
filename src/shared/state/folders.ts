@@ -1,6 +1,6 @@
 import type {IDBPDatabase} from 'idb'
 import type {RootState} from './root'
-import type {Design} from './designs'
+import type {Design} from '../types'
 import {makeAutoObservable, reaction, runInAction, toJS} from 'mobx'
 import type {PhotoroomDBSchema} from '../utils/idb'
 import {loadFoldersFromDB, saveFoldersToDB} from '../utils/idb'

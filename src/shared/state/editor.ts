@@ -2,8 +2,7 @@ import {makeAutoObservable, reaction} from 'mobx'
 import type {RootState} from './root'
 import type {IDBPDatabase} from 'idb'
 import type {PhotoroomDBSchema} from '../utils/idb'
-import type {Layer, ChangeableLayer} from './designs'
-import type {DragState, EditorTool} from '../types'
+import type {ChangeableLayer, DragState, EditorTool, Layer} from '../types'
 import {DEFAULT_DRAG_STATE} from '../constants'
 import {isChangeableLayer} from '../utils'
 
@@ -14,7 +13,9 @@ export class EditorState {
     dragState: DragState = DEFAULT_DRAG_STATE
     defaultFontSize = 0
     selectedLayerId: Layer['id'] | null = null
+    selectedLayer: Layer | null = null
     hoveredLayerId: Layer['id'] | null = null
+    hoveredLayer: Layer | null = null
     selectedTool: EditorTool | null = null
     selectedText: string | null = null
     selectedEmoji: string | null = null
@@ -31,6 +32,26 @@ export class EditorState {
                     this.defaultFontSize =
                         Math.min(design.image.width, design.image.height) / 10
                 }
+            },
+        )
+
+        reaction(
+            () => ({
+                layers: this.activeDesign?.layers,
+                selectedLayerId: this.selectedLayerId,
+                hoveredLayerId: this.hoveredLayerId,
+            }),
+            value => {
+                this.selectedLayer = value.layers
+                    ? (value.layers.find(
+                          layer => layer.id === this.selectedLayerId,
+                      ) ?? null)
+                    : null
+                this.hoveredLayer = value.layers
+                    ? (value.layers.find(
+                          layer => layer.id === this.hoveredLayerId,
+                      ) ?? null)
+                    : null
             },
         )
     }

@@ -1,4 +1,4 @@
-import type {Layer as LayerType} from '~/shared/state'
+import type {Layer as LayerType} from '~/shared/types'
 import {Button} from '~/shared/ui'
 import {EyeCrossedIcon, EyeIcon, TrashIcon} from '~/shared/icons'
 import {tcn} from '~/shared/utils'

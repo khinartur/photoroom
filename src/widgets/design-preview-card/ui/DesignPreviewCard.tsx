@@ -10,7 +10,7 @@ import {
     useSelectionState,
 } from '~/shared/state'
 import {DeleteMenuItem, Dropdown, Checkbox, MenuItem} from '~/shared/ui'
-import type {Design} from '~/shared/state'
+import type {Design} from '~/shared/types'
 
 type DesignPreviewCardProps = {
     designId: Design['id']

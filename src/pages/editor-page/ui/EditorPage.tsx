@@ -1,7 +1,6 @@
-import {useCallback, useEffect, useRef} from 'react'
+import {useCallback, useRef} from 'react'
 import {observer} from 'mobx-react-lite'
-import type {Layer} from '~/shared/state'
-import {useAppState, useEditorState} from '~/shared/state'
+import {useEditorState} from '~/shared/state'
 import {isChangeableLayer, tcn} from '~/shared/utils'
 import {Sidebar} from './sidebar'
 import {LayerFrame, LayerHoverFrame} from './layer-frame'
@@ -9,102 +8,37 @@ import {
     useCalculateCanvasDisplayParams,
     useOnCanvasClick,
     useOnCanvasHover,
+    useRedrawCanvas,
 } from '../hooks'
 import {Header} from './header'
-import {applyEmojiLayer} from '../utils'
 import {DragNDropProvider} from './providers'
 import {EDITOR_PADDING} from '~/shared/constants'
-import {applyTextLayer} from '../utils'
+import {useEditorPageRedirect} from '../hooks'
 
 export const EditorPage = observer(() => {
-    const appState = useAppState()
     const editorState = useEditorState()
     const containerRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const canvasWrapperRef = useRef<HTMLDivElement>(null)
 
-    const design = editorState.activeDesign
-    const dragState = editorState.dragState
-    const selectedLayer = design?.layers.find(
-        layer => layer.id === editorState.selectedLayerId,
-    )
-    const hoveredLayer = design?.layers.find(
-        layer => layer.id === editorState.hoveredLayerId,
-    )
+    const selectedLayer = editorState.selectedLayer
+    const hoveredLayer = editorState.hoveredLayer
     const defaultFontSize = editorState.defaultFontSize
 
     const canvasDisplayParams = useCalculateCanvasDisplayParams(
         containerRef,
         canvasWrapperRef,
-        design,
     )
 
-    const onCanvasClick = useOnCanvasClick(canvasRef, design)
-    const {onCanvasHover, onCanvasLeave} = useOnCanvasHover(canvasRef, design)
+    const onCanvasClick = useOnCanvasClick(canvasRef)
+    const {onCanvasHover, onCanvasLeave} = useOnCanvasHover(canvasRef)
+    const onCanvasWrapperClick = useCallback(() => {
+        editorState.resetTool()
+    }, [editorState])
 
-    useEffect(() => {
-        if (!design) {
-            appState.goToDesignsPage()
-        }
-    }, [design, appState])
+    useRedrawCanvas(canvasRef, canvasDisplayParams)
 
-    const redrawCanvas = useCallback(
-        (canvas: HTMLCanvasElement, layers: Layer[]) => {
-            const ctx = canvas.getContext('2d')
-            if (!ctx || !design) {
-                return
-            }
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            ctx.drawImage(design.image, 0, 0)
-
-            for (const layer of layers) {
-                if (layer.hidden) {
-                    continue
-                }
-
-                if (layer.type === 'TEXT') {
-                    applyTextLayer(
-                        ctx,
-                        layer,
-                        dragState,
-                        canvasDisplayParams,
-                        defaultFontSize,
-                    )
-                    continue
-                }
-
-                if (layer.type === 'EMOJI') {
-                    applyEmojiLayer(
-                        ctx,
-                        layer,
-                        dragState,
-                        canvasDisplayParams,
-                        defaultFontSize,
-                    )
-                }
-            }
-        },
-        [design, dragState, canvasDisplayParams, defaultFontSize],
-    )
-
-    useEffect(() => {
-        const canvas = canvasRef.current
-        if (!canvas || !design?.image) {
-            return
-        }
-        canvas.width = design.image.width
-        canvas.height = design.image.height
-        const ctx = canvas.getContext('2d')
-        ctx?.drawImage(design.image, 0, 0)
-    }, [design?.image])
-
-    useEffect(() => {
-        const canvas = canvasRef.current
-        if (!canvas || !design?.layers) {
-            return
-        }
-        redrawCanvas(canvas, design.layers)
-    }, [design?.layers, redrawCanvas])
+    useEditorPageRedirect()
 
     return (
         <DragNDropProvider canvasDisplayParams={canvasDisplayParams}>
@@ -117,7 +51,7 @@ export const EditorPage = observer(() => {
                         style={{
                             padding: `${EDITOR_PADDING}px`,
                         }}
-                        onClick={() => editorState.resetTool()}
+                        onClick={onCanvasWrapperClick}
                     >
                         <canvas
                             ref={canvasRef}
@@ -133,17 +67,14 @@ export const EditorPage = observer(() => {
                             onMouseMove={onCanvasHover}
                             onMouseLeave={onCanvasLeave}
                         />
-                        {design &&
-                            selectedLayer &&
-                            isChangeableLayer(selectedLayer) && (
-                                <LayerFrame
-                                    selectedLayer={selectedLayer}
-                                    defaultFontSize={defaultFontSize}
-                                    canvasDisplayParams={canvasDisplayParams}
-                                />
-                            )}
-                        {design &&
-                            hoveredLayer &&
+                        {selectedLayer && isChangeableLayer(selectedLayer) && (
+                            <LayerFrame
+                                selectedLayer={selectedLayer}
+                                defaultFontSize={defaultFontSize}
+                                canvasDisplayParams={canvasDisplayParams}
+                            />
+                        )}
+                        {hoveredLayer &&
                             isChangeableLayer(hoveredLayer) &&
                             hoveredLayer.id !== editorState.selectedLayerId && (
                                 <LayerHoverFrame

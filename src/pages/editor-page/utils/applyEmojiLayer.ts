@@ -1,5 +1,5 @@
 import type {CanvasDisplayParams, DragState} from '~/shared/types'
-import type {EmojiLayer} from '~/shared/state'
+import type {EmojiLayer} from '~/shared/types'
 
 export const applyEmojiLayer = (
     ctx: CanvasRenderingContext2D,

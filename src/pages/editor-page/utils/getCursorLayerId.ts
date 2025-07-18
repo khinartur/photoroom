@@ -1,4 +1,4 @@
-import type {Layer} from '~/shared/state'
+import type {Layer} from '~/shared/types'
 
 export const getCursorLayerId = (
     layers: Layer[],

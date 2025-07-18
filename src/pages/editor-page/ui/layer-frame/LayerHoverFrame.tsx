@@ -1,6 +1,5 @@
 import {observer} from 'mobx-react-lite'
-import type {ChangeableLayer} from '~/shared/state'
-import type {CanvasDisplayParams} from '~/shared/types'
+import type {CanvasDisplayParams, ChangeableLayer} from '~/shared/types'
 import {useLayerFramePosition} from '../../hooks'
 
 type LayerHoverFrameProps = {

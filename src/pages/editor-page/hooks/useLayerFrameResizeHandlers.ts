@@ -1,6 +1,7 @@
 import {useCallback, useState} from 'react'
 import {MIN_FONT_SIZE} from '~/shared/constants'
-import {useEditorState, type ChangeableLayer} from '~/shared/state'
+import {useEditorState} from '~/shared/state'
+import type {ChangeableLayer} from '~/shared/types'
 import type {
     CanvasDisplayParams,
     LayerFrameCornerPosition,

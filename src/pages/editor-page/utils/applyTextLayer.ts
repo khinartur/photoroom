@@ -1,5 +1,5 @@
 import type {CanvasDisplayParams, DragState} from '~/shared/types'
-import type {TextLayer} from '~/shared/state'
+import type {TextLayer} from '~/shared/types'
 
 export const applyTextLayer = (
     ctx: CanvasRenderingContext2D,

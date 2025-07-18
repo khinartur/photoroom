@@ -1,4 +1,6 @@
 export {useCalculateCanvasDisplayParams} from './useCalculateCanvasDisplayParams'
+export {useEditorPageRedirect} from './useEditorPageRedirect'
+export {useRedrawCanvas} from './useRedrawCanvas'
 export {useOnCanvasClick} from './useOnCanvasClick'
 export {useOnCanvasHover} from './useOnCanvasHover'
 export {useLayerFramePosition} from './useLayerFramePosition'

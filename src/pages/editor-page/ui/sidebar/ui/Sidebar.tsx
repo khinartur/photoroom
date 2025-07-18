@@ -1,6 +1,7 @@
 import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
-import {useEditorState, type Layer as LayerType} from '~/shared/state'
+import {useEditorState} from '~/shared/state'
+import type {Layer as LayerType} from '~/shared/types'
 import {tcn} from '~/shared/utils'
 import {EmojiSelector, TextSelector} from '../../tools'
 import {Layer} from './Layer'

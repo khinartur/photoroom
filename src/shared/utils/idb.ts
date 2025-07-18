@@ -1,7 +1,7 @@
 import type {IDBPDatabase} from 'idb'
 import {openDB} from 'idb'
 import type {AppTheme} from '../state/app'
-import type {Design} from '../state/designs'
+import type {Design} from '../types'
 import type {Folder} from '../state/folders'
 import type {SerializedDesign} from './serializers'
 import {deserializeDesign, serializeDesign} from './serializers'

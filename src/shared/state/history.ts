@@ -1,5 +1,5 @@
 import type {RootState} from './root'
-import type {Design, Layer} from './designs'
+import type {Design, Layer} from '../types'
 import {makeAutoObservable, reaction} from 'mobx'
 
 export type Folder = {

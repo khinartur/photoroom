@@ -1,6 +1,6 @@
 import {makeAutoObservable} from 'mobx'
 import type {RootState} from './root'
-import type {Design} from './designs'
+import type {Design} from '../types'
 import type {Folder} from './folders'
 
 type NewFolderModal = {type: 'NEW_FOLDER'; addSelectionOnSuccess?: boolean}

@@ -1,4 +1,4 @@
-import type {Design} from './designs'
+import type {Design} from '../types'
 import type {Folder} from './folders'
 import type {RootState} from './root'
 import {makeAutoObservable, reaction} from 'mobx'
