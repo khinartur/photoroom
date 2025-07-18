@@ -8,6 +8,7 @@ import type {CanvasDisplayParams} from '~/shared/types'
 import {Corner, type CornerPosition} from './Corner'
 import {MIN_FONT_SIZE} from '~/shared/constants'
 import {tcn} from '~/shared/utils'
+import {useLayerFramePosition} from '../../hooks'
 
 type LayerFrameProps = {
     selectedLayer: ChangeableLayer
@@ -23,17 +24,13 @@ export const LayerFrame = observer(
     }: LayerFrameProps) => {
         const editorState = useEditorState()
         const [isResizing, setIsResizing] = useState(false)
-        const [initialFontSize, setInitialFontSize] = useState<number>(0)
 
         const fontSize = selectedLayer.fontSize ?? defaultFontSize
-        const displayFontSize = fontSize * canvasDisplayParams.scale
-
-        const displayX =
-            selectedLayer.x * canvasDisplayParams.scale +
-            canvasDisplayParams.canvasOffsetX
-        const displayY =
-            selectedLayer.y * canvasDisplayParams.scale +
-            canvasDisplayParams.canvasOffsetY
+        const framePosition = useLayerFramePosition(
+            selectedLayer,
+            canvasDisplayParams,
+            defaultFontSize,
+        )
 
         const {attributes, listeners, setNodeRef, transform, isDragging} =
             useDraggable({
@@ -46,8 +43,7 @@ export const LayerFrame = observer(
 
         const handleResizeStart = useCallback(() => {
             setIsResizing(true)
-            setInitialFontSize(fontSize)
-        }, [fontSize])
+        }, [])
 
         const handleResizeEnd = useCallback(() => {
             setIsResizing(false)
@@ -77,13 +73,13 @@ export const LayerFrame = observer(
                     (scaleDelta * sensitivity) / canvasDisplayParams.scale
                 const newFontSize = Math.max(
                     MIN_FONT_SIZE,
-                    initialFontSize + fontSizeChange,
+                    fontSize + fontSizeChange,
                 )
 
                 editorState.updateLayerFontSize(selectedLayer.id, newFontSize)
             },
             [
-                initialFontSize,
+                fontSize,
                 canvasDisplayParams.scale,
                 editorState,
                 selectedLayer.id,
@@ -98,10 +94,10 @@ export const LayerFrame = observer(
                 ref={setNodeRef}
                 className="absolute border-[2px] border-content-accent cursor-move select-none"
                 style={{
-                    top: displayY - displayFontSize * 0.4,
-                    left: displayX - displayFontSize / 2,
-                    width: displayFontSize,
-                    height: displayFontSize,
+                    top: framePosition.top,
+                    left: framePosition.left,
+                    width: framePosition.width,
+                    height: framePosition.height,
                     transform: CSS.Transform.toString(transform),
                     transition:
                         isDragging || isResizing ? 'none' : 'all 0.1s ease-out',

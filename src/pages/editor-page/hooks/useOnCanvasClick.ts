@@ -33,6 +33,37 @@ export const useOnCanvasClick = (
                 continue
             }
 
+            if (layer.type === 'TEXT') {
+                const fontSize = layer.fontSize ?? editorState.defaultFontSize
+
+                // Create a temporary canvas to measure text width
+                const tempCanvas = document.createElement('canvas')
+                const tempCtx = tempCanvas.getContext('2d')
+                if (!tempCtx) {
+                    continue
+                }
+
+                tempCtx.font = `${fontSize}px serif`
+                const textMetrics = tempCtx.measureText(layer.text)
+                const textWidth = textMetrics.width
+
+                const textLeft = layer.x
+                const textRight = layer.x + textWidth
+                const textTop = layer.y - fontSize * 0.8
+                const textBottom = layer.y + fontSize * 0.2
+
+                const isWithinBounds =
+                    x >= textLeft &&
+                    x <= textRight &&
+                    y >= textTop &&
+                    y <= textBottom
+
+                if (isWithinBounds) {
+                    editorState.setSelectedLayerId(layer.id)
+                    return
+                }
+            }
+
             if (layer.type === 'EMOJI') {
                 const fontSize = layer.fontSize ?? editorState.defaultFontSize
 

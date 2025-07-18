@@ -10,6 +10,7 @@ import {Header} from './header'
 import {applyEmojiLayer} from '../utils'
 import {DragNDropProvider} from './providers'
 import {EDITOR_PADDING} from '~/shared/constants'
+import {applyTextLayer} from '../utils/applyTextLayer'
 
 export const EditorPage = observer(() => {
     const appState = useAppState()
@@ -50,6 +51,17 @@ export const EditorPage = observer(() => {
 
             for (const layer of layers) {
                 if (layer.hidden) {
+                    continue
+                }
+
+                if (layer.type === 'TEXT') {
+                    applyTextLayer(
+                        ctx,
+                        layer,
+                        dragState,
+                        canvasDisplayParams,
+                        defaultFontSize,
+                    )
                     continue
                 }
 

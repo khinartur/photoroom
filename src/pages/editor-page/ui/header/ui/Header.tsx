@@ -6,7 +6,13 @@ import {
     useHistoryState,
     useModalsState,
 } from '~/shared/state'
-import {DotsIcon, HomeIcon, ImagesIcon, ReverseIcon} from '~/shared/icons'
+import {
+    DotsIcon,
+    HomeIcon,
+    ImagesIcon,
+    ReverseIcon,
+    TextIcon,
+} from '~/shared/icons'
 import {Button, Dropdown, DeleteMenuItem, Tool} from '~/shared/ui'
 import {tcn} from '~/shared/utils'
 import {ExportButton} from '~/widgets/export-button'
@@ -56,12 +62,20 @@ export const Header = observer(({canvasRef}: HeaderProps) => {
                     />
                 </div>
             </div>
-            <Tool
-                icon={<ImagesIcon />}
-                onClick={() => editorState.selectEmojiTool()}
-            >
-                Add Emoji
-            </Tool>
+            <div className="flex items-center gap-0.5">
+                <Tool
+                    icon={<TextIcon />}
+                    onClick={() => editorState.selectTextTool()}
+                >
+                    Add text
+                </Tool>
+                <Tool
+                    icon={<ImagesIcon />}
+                    onClick={() => editorState.selectEmojiTool()}
+                >
+                    Add Emoji
+                </Tool>
+            </div>
             <div className="flex items-center gap-2">
                 <Dropdown
                     align="end"

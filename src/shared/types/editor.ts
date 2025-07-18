@@ -1,3 +1,12 @@
+export type EditorToolType = 'TEXT' | 'EMOJI'
+
+export type EditorToolCallback = (clickX: number, clickY: number) => void
+
+export type EditorTool = {
+    type: EditorToolType
+    tool: EditorToolCallback
+}
+
 export type CanvasDisplayParams = {
     width: number
     height: number

@@ -1,11 +1,11 @@
 import {base64ToImage, imageToBase64} from './image'
-import type {Design, EmojiLayer, ImageLayer, Layer} from '../state/designs'
+import type {Design, EmojiLayer, ImageLayer, Layer, TextLayer} from '../state'
 
 type SerializedImageLayer = Omit<ImageLayer, 'image'> & {
     image: string
 }
 
-type SerializedLayer = SerializedImageLayer | EmojiLayer
+type SerializedLayer = SerializedImageLayer | TextLayer | EmojiLayer
 
 export type SerializedDesign = Omit<Design, 'image' | 'layers'> & {
     image: string

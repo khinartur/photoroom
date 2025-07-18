@@ -18,6 +18,15 @@ export type ImageLayer = CommonLayerProps & {
     image: HTMLImageElement
 }
 
+export type TextLayer = CommonLayerProps & {
+    type: 'TEXT'
+    name: 'Text'
+    text: string
+    x: number
+    y: number
+    fontSize?: number
+}
+
 export type EmojiLayer = CommonLayerProps & {
     type: 'EMOJI'
     name: 'Emoji'
@@ -27,9 +36,9 @@ export type EmojiLayer = CommonLayerProps & {
     fontSize?: number
 }
 
-export type Layer = ImageLayer | EmojiLayer
+export type Layer = ImageLayer | TextLayer | EmojiLayer
 
-export type ChangeableLayer = EmojiLayer
+export type ChangeableLayer = TextLayer | EmojiLayer
 
 export type Design = {
     id: string

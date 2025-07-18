@@ -3,10 +3,9 @@ import type {RootState} from './root'
 import type {IDBPDatabase} from 'idb'
 import type {PhotoroomDBSchema} from '../utils/idb'
 import type {Layer} from './designs'
-import type {DragState} from '../types'
+import type {DragState, EditorTool} from '../types'
 import {DEFAULT_DRAG_STATE} from '../constants'
-
-type EditorTool = (clickX: number, clickY: number) => void
+import {isChangeableLayer} from '../utils'
 
 export class EditorState {
     rootState: RootState
@@ -16,6 +15,7 @@ export class EditorState {
     defaultFontSize = 0
     selectedLayerId: Layer['id'] | null = null
     selectedTool: EditorTool | null = null
+    selectedText: string | null = null
     selectedEmoji: string | null = null
 
     constructor(rootState: RootState, db: IDBPDatabase<PhotoroomDBSchema>) {
@@ -95,7 +95,7 @@ export class EditorState {
         if (!this.activeDesign) return
 
         this.activeDesign.layers = this.activeDesign.layers.map(layer =>
-            layer.id === layerId && layer.type === 'EMOJI'
+            layer.id === layerId && isChangeableLayer(layer)
                 ? {...layer, x, y}
                 : layer,
         )
@@ -105,14 +105,29 @@ export class EditorState {
         if (!this.activeDesign) return
 
         this.activeDesign.layers = this.activeDesign.layers.map(layer =>
-            layer.id === layerId && layer.type === 'EMOJI'
+            layer.id === layerId && isChangeableLayer(layer)
                 ? {...layer, fontSize}
                 : layer,
         )
     }
 
     applyTool(clickX: number, clickY: number) {
-        this.selectedTool?.(clickX, clickY)
+        this.selectedTool?.tool(clickX, clickY)
+    }
+
+    addTextTool(clickX: number, clickY: number) {
+        if (!this.selectedText) {
+            return
+        }
+        this.addLayer({
+            id: crypto.randomUUID(),
+            hidden: false,
+            type: 'TEXT',
+            name: 'Text',
+            text: this.selectedText,
+            x: clickX,
+            y: clickY,
+        })
     }
 
     addEmojiTool(clickX: number, clickY: number) {
@@ -130,8 +145,22 @@ export class EditorState {
         })
     }
 
+    selectTextTool() {
+        this.selectedTool = {
+            type: 'TEXT',
+            tool: this.addTextTool.bind(this),
+        }
+    }
+
     selectEmojiTool() {
-        this.selectedTool = this.addEmojiTool
+        this.selectedTool = {
+            type: 'EMOJI',
+            tool: this.addEmojiTool.bind(this),
+        }
+    }
+
+    selectText(text: string) {
+        this.selectedText = text
     }
 
     selectEmoji(emoji: string) {

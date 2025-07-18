@@ -2,7 +2,7 @@ import {observer} from 'mobx-react-lite'
 import {useCallback} from 'react'
 import {useEditorState, type Layer as LayerType} from '~/shared/state'
 import {tcn} from '~/shared/utils'
-import {EmojiSelector} from '../../tools'
+import {EmojiSelector, TextSelector} from '../../tools'
 import {Layer} from './Layer'
 
 export const Sidebar = observer(() => {
@@ -23,7 +23,11 @@ export const Sidebar = observer(() => {
     )
 
     const getContent = () => {
-        if (editorState.selectedTool !== null) {
+        if (editorState.selectedTool?.type === 'TEXT') {
+            return <TextSelector />
+        }
+
+        if (editorState.selectedTool?.type === 'EMOJI') {
             return <EmojiSelector />
         }
 

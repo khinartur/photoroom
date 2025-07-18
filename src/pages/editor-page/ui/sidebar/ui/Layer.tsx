@@ -28,6 +28,15 @@ export const Layer: React.FC<LayerProps> = ({
                 />
             )
         }
+        if (layer.type === 'TEXT') {
+            return (
+                <div className="flex items-center justify-center size-10">
+                    <span className="text-xs text-content-primary truncate">
+                        {layer.text}
+                    </span>
+                </div>
+            )
+        }
         if (layer.type === 'EMOJI') {
             return (
                 <div className="flex items-center justify-center size-10">

@@ -15,11 +15,18 @@ export const CreatePage = observer(() => {
             <Category
                 title="Classics"
                 content={
-                    <TemplateCard
-                        imageSrc="/emojis.png"
-                        name="Add Emojis"
-                        onClick={onTemplateClick}
-                    />
+                    <div className="flex gap-2 overflow-x-scroll">
+                        <TemplateCard
+                            imageSrc="/text.png"
+                            name="Add Text"
+                            onClick={onTemplateClick}
+                        />
+                        <TemplateCard
+                            imageSrc="/emojis.png"
+                            name="Add Emojis"
+                            onClick={onTemplateClick}
+                        />
+                    </div>
                 }
             />
             <ImageSelector ref={fileInputRef} />
