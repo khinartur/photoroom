@@ -70,7 +70,10 @@ export const DragNDropProvider = ({
             const newCanvasX = layer.x + deltaCanvasX
             const newCanvasY = layer.y + deltaCanvasY
 
-            editorState.updateLayerPosition(layer.id, newCanvasX, newCanvasY)
+            editorState.updateLayerProperties(layer.id, {
+                x: newCanvasX,
+                y: newCanvasY,
+            })
 
             editorState.setDragState({
                 isDragging: false,

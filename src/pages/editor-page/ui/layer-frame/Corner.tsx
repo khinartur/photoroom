@@ -1,16 +1,15 @@
 import type React from 'react'
 import {useCallback, useRef} from 'react'
-
-export type CornerPosition =
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right'
+import type {LayerFrameCornerPosition} from '~/shared/types'
 
 type CornerProps = {
     className: string
-    position: CornerPosition
-    onResize: (position: CornerPosition, deltaX: number, deltaY: number) => void
+    position: LayerFrameCornerPosition
+    onResize: (
+        position: LayerFrameCornerPosition,
+        deltaX: number,
+        deltaY: number,
+    ) => void
     onResizeStart: () => void
     onResizeEnd: () => void
 }

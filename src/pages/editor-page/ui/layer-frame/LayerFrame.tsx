@@ -1,14 +1,11 @@
 import {observer} from 'mobx-react-lite'
 import {useDraggable} from '@dnd-kit/core'
 import {CSS} from '@dnd-kit/utilities'
-import {useCallback, useState} from 'react'
 import type {ChangeableLayer} from '~/shared/state'
-import {useEditorState} from '~/shared/state'
 import type {CanvasDisplayParams} from '~/shared/types'
-import {Corner, type CornerPosition} from './Corner'
-import {MIN_FONT_SIZE} from '~/shared/constants'
+import {Corner} from './Corner'
 import {tcn} from '~/shared/utils'
-import {useLayerFramePosition} from '../../hooks'
+import {useLayerFramePosition, useLayerFrameResizeHandlers} from '../../hooks'
 
 type LayerFrameProps = {
     selectedLayer: ChangeableLayer
@@ -22,15 +19,18 @@ export const LayerFrame = observer(
         canvasDisplayParams,
         defaultFontSize,
     }: LayerFrameProps) => {
-        const editorState = useEditorState()
-        const [isResizing, setIsResizing] = useState(false)
-
-        const fontSize = selectedLayer.fontSize ?? defaultFontSize
         const framePosition = useLayerFramePosition(
             selectedLayer,
             canvasDisplayParams,
             defaultFontSize,
         )
+
+        const {isResizing, handleResizeStart, handleResizeEnd, handleResize} =
+            useLayerFrameResizeHandlers(
+                selectedLayer,
+                canvasDisplayParams,
+                framePosition,
+            )
 
         const {attributes, listeners, setNodeRef, transform, isDragging} =
             useDraggable({
@@ -40,59 +40,6 @@ export const LayerFrame = observer(
                 },
                 disabled: isResizing,
             })
-
-        const handleResizeStart = useCallback(() => {
-            setIsResizing(true)
-        }, [])
-
-        const handleResizeEnd = useCallback(() => {
-            setIsResizing(false)
-        }, [])
-
-        const handleResize = useCallback(
-            (position: CornerPosition, deltaX: number, deltaY: number) => {
-                let scaleDelta = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-
-                switch (position) {
-                    case 'bottom-right':
-                        if (deltaX < 0 || deltaY < 0) {
-                            scaleDelta = -scaleDelta
-                        }
-                        break
-                    case 'top-left':
-                        if (deltaX > 0 || deltaY > 0) {
-                            scaleDelta = -scaleDelta
-                        }
-                        break
-                    case 'top-right':
-                        if (deltaX < 0 || deltaY > 0) {
-                            scaleDelta = -scaleDelta
-                        }
-                        break
-                    case 'bottom-left':
-                        if (deltaX > 0 || deltaY < 0) {
-                            scaleDelta = -scaleDelta
-                        }
-                        break
-                }
-
-                const sensitivity = 1
-                const fontSizeChange =
-                    (scaleDelta * sensitivity) / canvasDisplayParams.scale
-                const newFontSize = Math.max(
-                    MIN_FONT_SIZE,
-                    fontSize + fontSizeChange,
-                )
-
-                editorState.updateLayerFontSize(selectedLayer.id, newFontSize)
-            },
-            [
-                fontSize,
-                canvasDisplayParams.scale,
-                editorState,
-                selectedLayer.id,
-            ],
-        )
 
         const cornerClassName =
             'absolute w-3.5 h-3.5 rounded-full bg-background-white border-[2px] border-content-accent'

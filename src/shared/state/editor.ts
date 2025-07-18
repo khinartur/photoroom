@@ -2,7 +2,7 @@ import {makeAutoObservable, reaction} from 'mobx'
 import type {RootState} from './root'
 import type {IDBPDatabase} from 'idb'
 import type {PhotoroomDBSchema} from '../utils/idb'
-import type {Layer} from './designs'
+import type {Layer, ChangeableLayer} from './designs'
 import type {DragState, EditorTool} from '../types'
 import {DEFAULT_DRAG_STATE} from '../constants'
 import {isChangeableLayer} from '../utils'
@@ -93,26 +93,17 @@ export class EditorState {
         )
     }
 
-    updateLayerPosition(layerId: string, x: number, y: number) {
+    updateLayerProperties(
+        layerId: string,
+        updates: Partial<Pick<ChangeableLayer, 'x' | 'y' | 'fontSize'>>,
+    ) {
         if (!this.activeDesign) {
             return
         }
 
         this.activeDesign.layers = this.activeDesign.layers.map(layer =>
             layer.id === layerId && isChangeableLayer(layer)
-                ? {...layer, x, y}
-                : layer,
-        )
-    }
-
-    updateLayerFontSize(layerId: string, fontSize: number) {
-        if (!this.activeDesign) {
-            return
-        }
-
-        this.activeDesign.layers = this.activeDesign.layers.map(layer =>
-            layer.id === layerId && isChangeableLayer(layer)
-                ? {...layer, fontSize}
+                ? {...layer, ...updates}
                 : layer,
         )
     }

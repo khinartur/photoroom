@@ -1,13 +1,6 @@
 import {useMemo} from 'react'
 import type {ChangeableLayer} from '~/shared/state'
-import type {CanvasDisplayParams} from '~/shared/types'
-
-type LayerFramePosition = {
-    top: number
-    left: number
-    width: number
-    height: number
-}
+import type {CanvasDisplayParams, LayerFramePosition} from '~/shared/types'
 
 export const useLayerFramePosition = (
     layer: ChangeableLayer,
@@ -56,7 +49,7 @@ export const useLayerFramePosition = (
         if (layer.type === 'EMOJI') {
             // Square frame centered around emoji position
             return {
-                top: displayY - displayFontSize / 2,
+                top: displayY - displayFontSize * 0.4,
                 left: displayX - displayFontSize / 2,
                 width: displayFontSize,
                 height: displayFontSize,

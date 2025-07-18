@@ -20,3 +20,16 @@ export type DragState = {
     dragLayerId: string | null
     dragDelta: {x: number; y: number} | null
 }
+
+export type LayerFramePosition = {
+    top: number
+    left: number
+    width: number
+    height: number
+}
+
+export type LayerFrameCornerPosition =
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
