@@ -25,6 +25,8 @@ export default tseslint.config(
             ],
             'object-curly-spacing': ['error', 'never'],
             'array-bracket-spacing': ['error', 'never'],
+            curly: ['error', 'all'],
+            'brace-style': ['error', '1tbs', {allowSingleLine: false}],
         },
     },
 )

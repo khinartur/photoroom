@@ -84,7 +84,9 @@ export class EditorState {
     }
 
     updateLayerVisibility(layerId: string, hidden: boolean) {
-        if (!this.activeDesign) return
+        if (!this.activeDesign) {
+            return
+        }
 
         this.activeDesign.layers = this.activeDesign.layers.map(layer =>
             layer.id === layerId ? {...layer, hidden} : layer,
@@ -92,7 +94,9 @@ export class EditorState {
     }
 
     updateLayerPosition(layerId: string, x: number, y: number) {
-        if (!this.activeDesign) return
+        if (!this.activeDesign) {
+            return
+        }
 
         this.activeDesign.layers = this.activeDesign.layers.map(layer =>
             layer.id === layerId && isChangeableLayer(layer)
@@ -102,7 +106,9 @@ export class EditorState {
     }
 
     updateLayerFontSize(layerId: string, fontSize: number) {
-        if (!this.activeDesign) return
+        if (!this.activeDesign) {
+            return
+        }
 
         this.activeDesign.layers = this.activeDesign.layers.map(layer =>
             layer.id === layerId && isChangeableLayer(layer)

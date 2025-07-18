@@ -36,7 +36,9 @@ export const Corner = ({
             onResizeStart()
 
             const handleMouseMove = (moveEvent: MouseEvent) => {
-                if (!isDraggingRef.current) return
+                if (!isDraggingRef.current) {
+                    return
+                }
 
                 const deltaX = moveEvent.clientX - startPosRef.current.x
                 const deltaY = moveEvent.clientY - startPosRef.current.y

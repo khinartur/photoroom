@@ -60,7 +60,9 @@ export const loadDesignsFromDB = async (
     db: IDBPDatabase<PhotoroomDBSchema>,
 ): Promise<Design[]> => {
     const result = await db.get('state', 'designs')
-    if (!result) return []
+    if (!result) {
+        return []
+    }
     const serializedDesigns = result as unknown as SerializedDesign[]
     return Promise.all(serializedDesigns.map(deserializeDesign))
 }

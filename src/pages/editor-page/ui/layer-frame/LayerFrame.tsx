@@ -55,16 +55,24 @@ export const LayerFrame = observer(
 
                 switch (position) {
                     case 'bottom-right':
-                        if (deltaX < 0 || deltaY < 0) scaleDelta = -scaleDelta
+                        if (deltaX < 0 || deltaY < 0) {
+                            scaleDelta = -scaleDelta
+                        }
                         break
                     case 'top-left':
-                        if (deltaX > 0 || deltaY > 0) scaleDelta = -scaleDelta
+                        if (deltaX > 0 || deltaY > 0) {
+                            scaleDelta = -scaleDelta
+                        }
                         break
                     case 'top-right':
-                        if (deltaX < 0 || deltaY > 0) scaleDelta = -scaleDelta
+                        if (deltaX < 0 || deltaY > 0) {
+                            scaleDelta = -scaleDelta
+                        }
                         break
                     case 'bottom-left':
-                        if (deltaX > 0 || deltaY < 0) scaleDelta = -scaleDelta
+                        if (deltaX > 0 || deltaY < 0) {
+                            scaleDelta = -scaleDelta
+                        }
                         break
                 }
 
