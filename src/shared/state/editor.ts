@@ -14,6 +14,7 @@ export class EditorState {
     dragState: DragState = DEFAULT_DRAG_STATE
     defaultFontSize = 0
     selectedLayerId: Layer['id'] | null = null
+    hoveredLayerId: Layer['id'] | null = null
     selectedTool: EditorTool | null = null
     selectedText: string | null = null
     selectedEmoji: string | null = null
@@ -54,6 +55,10 @@ export class EditorState {
 
     setSelectedLayerId(layerId: Layer['id'] | null) {
         this.selectedLayerId = layerId
+    }
+
+    setHoveredLayerId(layerId: Layer['id'] | null) {
+        this.hoveredLayerId = layerId
     }
 
     addLayer(layer: Layer) {

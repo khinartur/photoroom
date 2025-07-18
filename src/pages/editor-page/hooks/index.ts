@@ -1,4 +1,5 @@
 export {useCalculateCanvasDisplayParams} from './useCalculateCanvasDisplayParams'
 export {useOnCanvasClick} from './useOnCanvasClick'
+export {useOnCanvasHover} from './useOnCanvasHover'
 export {useLayerFramePosition} from './useLayerFramePosition'
 export {useLayerFrameResizeHandlers} from './useLayerFrameResizeHandlers'

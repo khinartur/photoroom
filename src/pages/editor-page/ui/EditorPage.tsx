@@ -4,13 +4,17 @@ import type {Layer} from '~/shared/state'
 import {useAppState, useEditorState} from '~/shared/state'
 import {isChangeableLayer, tcn} from '~/shared/utils'
 import {Sidebar} from './sidebar'
-import {LayerFrame} from './layer-frame'
-import {useCalculateCanvasDisplayParams, useOnCanvasClick} from '../hooks'
+import {LayerFrame, LayerHoverFrame} from './layer-frame'
+import {
+    useCalculateCanvasDisplayParams,
+    useOnCanvasClick,
+    useOnCanvasHover,
+} from '../hooks'
 import {Header} from './header'
 import {applyEmojiLayer} from '../utils'
 import {DragNDropProvider} from './providers'
 import {EDITOR_PADDING} from '~/shared/constants'
-import {applyTextLayer} from '../utils/applyTextLayer'
+import {applyTextLayer} from '../utils'
 
 export const EditorPage = observer(() => {
     const appState = useAppState()
@@ -24,6 +28,9 @@ export const EditorPage = observer(() => {
     const selectedLayer = design?.layers.find(
         layer => layer.id === editorState.selectedLayerId,
     )
+    const hoveredLayer = design?.layers.find(
+        layer => layer.id === editorState.hoveredLayerId,
+    )
     const defaultFontSize = editorState.defaultFontSize
 
     const canvasDisplayParams = useCalculateCanvasDisplayParams(
@@ -33,6 +40,7 @@ export const EditorPage = observer(() => {
     )
 
     const onCanvasClick = useOnCanvasClick(canvasRef, design)
+    const {onCanvasHover, onCanvasLeave} = useOnCanvasHover(canvasRef, design)
 
     useEffect(() => {
         if (!design) {
@@ -122,12 +130,24 @@ export const EditorPage = observer(() => {
                                 height: canvasDisplayParams.height,
                             }}
                             onClick={onCanvasClick}
+                            onMouseMove={onCanvasHover}
+                            onMouseLeave={onCanvasLeave}
                         />
                         {design &&
                             selectedLayer &&
                             isChangeableLayer(selectedLayer) && (
                                 <LayerFrame
                                     selectedLayer={selectedLayer}
+                                    defaultFontSize={defaultFontSize}
+                                    canvasDisplayParams={canvasDisplayParams}
+                                />
+                            )}
+                        {design &&
+                            hoveredLayer &&
+                            isChangeableLayer(hoveredLayer) &&
+                            hoveredLayer.id !== editorState.selectedLayerId && (
+                                <LayerHoverFrame
+                                    hoveredLayer={hoveredLayer}
                                     defaultFontSize={defaultFontSize}
                                     canvasDisplayParams={canvasDisplayParams}
                                 />

@@ -2,16 +2,16 @@ import type {RefObject} from 'react'
 import {useEditorState, type Design} from '~/shared/state'
 import {getCursorLayerId} from '../utils'
 
-export const useOnCanvasClick = (
+export const useOnCanvasHover = (
     canvasRef: RefObject<HTMLCanvasElement>,
     design?: Design | null,
 ) => {
     const editorState = useEditorState()
 
-    return (e: React.MouseEvent<HTMLCanvasElement>) => {
-        e.stopPropagation()
+    const onCanvasHover = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current
         if (!canvas || !design?.image) {
+            editorState.setHoveredLayerId(null)
             return
         }
 
@@ -23,17 +23,18 @@ export const useOnCanvasClick = (
         const x = (e.clientX - rect.left) * scaleX
         const y = (e.clientY - rect.top) * scaleY
 
-        if (editorState.selectedTool !== null) {
-            editorState.applyTool(x, y)
-            return
-        }
-
         const layerId = getCursorLayerId(
             design.layers,
             editorState.defaultFontSize,
             x,
             y,
         )
-        editorState.setSelectedLayerId(layerId)
+        editorState.setHoveredLayerId(layerId)
     }
+
+    const onCanvasLeave = () => {
+        editorState.setHoveredLayerId(null)
+    }
+
+    return {onCanvasHover, onCanvasLeave}
 }
