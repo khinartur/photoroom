@@ -1,6 +1,7 @@
 import {useMemo} from 'react'
 import type {ChangeableLayer} from '~/shared/types'
 import type {CanvasDisplayParams, LayerFramePosition} from '~/shared/types'
+import {getTextWidth} from '~/shared/utils'
 
 export const useLayerFramePosition = (
     layer: ChangeableLayer,
@@ -19,23 +20,7 @@ export const useLayerFramePosition = (
             canvasDisplayParams.canvasOffsetY
 
         if (layer.type === 'TEXT') {
-            // Measure text width for accurate frame sizing
-            const tempCanvas = document.createElement('canvas')
-            const tempCtx = tempCanvas.getContext('2d')
-
-            if (!tempCtx) {
-                // Fallback to square frame if canvas context is not available
-                return {
-                    top: displayY - displayFontSize * 0.8,
-                    left: displayX - displayFontSize / 2,
-                    width: displayFontSize,
-                    height: displayFontSize,
-                }
-            }
-
-            tempCtx.font = `${fontSize}px serif`
-            const textMetrics = tempCtx.measureText(layer.text)
-            const textWidth = textMetrics.width
+            const textWidth = getTextWidth(layer.text, fontSize)
             const displayTextWidth = textWidth * canvasDisplayParams.scale
 
             return {

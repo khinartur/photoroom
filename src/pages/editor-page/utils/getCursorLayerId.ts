@@ -1,4 +1,5 @@
 import type {Layer} from '~/shared/types'
+import {getTextWidth} from '~/shared/utils'
 
 export const getCursorLayerId = (
     layers: Layer[],
@@ -15,17 +16,7 @@ export const getCursorLayerId = (
 
         if (layer.type === 'TEXT') {
             const fontSize = layer.fontSize ?? defaultFontSize
-
-            // Create a temporary canvas to measure text width
-            const tempCanvas = document.createElement('canvas')
-            const tempCtx = tempCanvas.getContext('2d')
-            if (!tempCtx) {
-                continue
-            }
-
-            tempCtx.font = `${fontSize}px serif`
-            const textMetrics = tempCtx.measureText(layer.text)
-            const textWidth = textMetrics.width
+            const textWidth = getTextWidth(layer.text, fontSize)
 
             const textLeft = layer.x
             const textRight = layer.x + textWidth

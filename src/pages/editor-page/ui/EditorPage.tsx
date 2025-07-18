@@ -21,9 +21,7 @@ export const EditorPage = observer(() => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const canvasWrapperRef = useRef<HTMLDivElement>(null)
 
-    const selectedLayer = editorState.selectedLayer
-    const hoveredLayer = editorState.hoveredLayer
-    const defaultFontSize = editorState.defaultFontSize
+    const {selectedLayer, hoveredLayer, defaultFontSize} = editorState
 
     const canvasDisplayParams = useCalculateCanvasDisplayParams(
         containerRef,
